@@ -1,0 +1,10 @@
+{
+  "app": "npx ts-node --prefer-ts-exts aws-cdk/api.ts",
+  "build": "tsc",
+  "watch": {
+    "include": [
+      "src"
+    ]
+  },
+  "context": {}
+}

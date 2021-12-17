@@ -6,10 +6,9 @@ type Content struct {
 	PK string
 	SK string
 
-	// DynamoDB GSI
 	ContentStatus string // "active", "inactive" and "submitted"
 
-	// Manual GSI (Scan)
+	Position   int64
 	Tags       []string
 	SpecialTag string // "new", "hot", "best" and "old"
 
@@ -23,12 +22,12 @@ type Content struct {
 	Vertical    string
 
 	// Video specific
-	PlaylistID    string
-	Promoted      int8
-	Live          int8
-	Provider      string
-	Expdate       int64
-	Position      int64
+	PlaylistID string
+	Promoted   int8
+	Live       int8
+	Provider   string
+	Expdate    int64
+
 	PlaylistTitle string
 }
 

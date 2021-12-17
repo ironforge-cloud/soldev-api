@@ -4,6 +4,7 @@ import (
 	"api/internal/database"
 	"api/internal/types"
 	"errors"
+	"sort"
 	"strconv"
 	"strings"
 	"time"
@@ -62,6 +63,7 @@ func CreateContent(content types.Content) error {
 }
 
 // GetContent ...
+// TODO: The sort functionality in this method can be improved. Too many iterations
 func GetContent(vertical string, contentType string, tags string, specialTag string) ([]types.Content, error) {
 
 	contentList, err := database.QueryContent(vertical, contentType, "")
@@ -70,7 +72,7 @@ func GetContent(vertical string, contentType string, tags string, specialTag str
 		return nil, err
 	}
 
-	// Sort
+	// Sort structure
 	type categorizedContent struct {
 		best    []types.Content
 		hot     []types.Content
@@ -115,9 +117,11 @@ func GetContent(vertical string, contentType string, tags string, specialTag str
 		contentFilteredBySpecialTags = mergeContent(contentByCategory.best, contentByCategory.new, contentByCategory.hot, contentByCategory.noBadge, contentByCategory.old)
 	}
 
+	contentSortedByPosition := sortContentByPosition(contentFilteredBySpecialTags)
+
 	// If there are no tags to filter by, we can return here
 	if len(tags) == 0 {
-		return contentFilteredBySpecialTags, nil
+		return contentSortedByPosition, nil
 	}
 
 	var contentResponse []types.Content
@@ -126,7 +130,7 @@ func GetContent(vertical string, contentType string, tags string, specialTag str
 	if len(tags) > 0 {
 		tagsSlice := strings.Split(tags, ",")
 
-		for _, content := range contentFilteredBySpecialTags {
+		for _, content := range contentSortedByPosition {
 			for _, requestTag := range tagsSlice {
 				// if content is added we need to break this range too\
 				shouldBreak := false
@@ -236,7 +240,7 @@ func DoesContentExist(url string) (bool, error) {
 	return false, nil
 }
 
-// mergeContent
+// mergeContent ...
 func mergeContent(args ...[]types.Content) []types.Content {
 	mergedSlice := make([]types.Content, 0)
 	for _, oneSlice := range args {
@@ -244,4 +248,14 @@ func mergeContent(args ...[]types.Content) []types.Content {
 	}
 
 	return mergedSlice
+}
+
+// sortContentByPosition ...
+func sortContentByPosition(contentList []types.Content) []types.Content {
+	data := contentList
+	sort.SliceStable(data, func(i, j int) bool {
+		return data[i].Position < data[j].Position
+	})
+
+	return data
 }

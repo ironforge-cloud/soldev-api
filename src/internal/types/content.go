@@ -8,7 +8,7 @@ type Content struct {
 
 	ContentStatus string // "active", "inactive" and "submitted"
 
-	Position   int64
+	Position   int64 // content != playlists means weight
 	Tags       []string
 	SpecialTag string // "new", "hot", "best" and "old"
 

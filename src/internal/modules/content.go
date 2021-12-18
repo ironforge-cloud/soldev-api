@@ -117,6 +117,8 @@ func GetContent(vertical string, contentType string, tags string, specialTag str
 		contentFilteredBySpecialTags = mergeContent(contentByCategory.best, contentByCategory.new, contentByCategory.hot, contentByCategory.noBadge, contentByCategory.old)
 	}
 
+	// Content needs to be sorted using Position. Position in this scope means weight,
+	// in other words higher number goes first.
 	contentSortedByPosition := sortContentByPosition(contentFilteredBySpecialTags)
 
 	// If there are no tags to filter by, we can return here
@@ -253,8 +255,9 @@ func mergeContent(args ...[]types.Content) []types.Content {
 // sortContentByPosition ...
 func sortContentByPosition(contentList []types.Content) []types.Content {
 	data := contentList
+
 	sort.SliceStable(data, func(i, j int) bool {
-		return data[i].Position < data[j].Position
+		return data[i].Position > data[j].Position
 	})
 
 	return data

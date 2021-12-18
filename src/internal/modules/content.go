@@ -66,10 +66,16 @@ func CreateContent(content types.Content) error {
 // TODO: The sort functionality in this method can be improved. Too many iterations
 func GetContent(vertical string, contentType string, tags string, specialTag string) ([]types.Content, error) {
 
-	contentList, err := database.QueryContent(vertical, contentType, "")
+	contentList, videoContent, err := database.QueryContent(vertical, contentType, "")
 
 	if err != nil {
 		return nil, err
+	}
+
+	// If videoContent we don't need to sort. DynamoDB GSI video-gsi is
+	// taking care of that already using the sort key
+	if videoContent {
+		return contentList, nil
 	}
 
 	// Sort structure

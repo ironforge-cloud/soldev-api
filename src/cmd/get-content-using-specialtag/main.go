@@ -22,7 +22,7 @@ func Handler(ctx context.Context, request Request) (Response, error) {
 	var specialTag = request.PathParameters["specialTag"]
 
 	// Get list of content with specialTag
-	content, err := database.QueryContent("", "", specialTag)
+	content, _, err := database.QueryContent("", "", specialTag)
 
 	// Check if error exist
 	if err != nil && err.Error() == "404" {

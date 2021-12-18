@@ -77,7 +77,7 @@ func DeleteContent(content types.Content) error {
 }
 
 // QueryContent ...
-func QueryContent(vertical string, contentType string, specialTag string) ([]types.Content, error) {
+func QueryContent(vertical string, contentType string, specialTag string) ([]types.Content, bool, error) {
 	// TODO: Handle error
 	dynamo, _ := Client()
 	var contentList []types.Content
@@ -128,13 +128,13 @@ func QueryContent(vertical string, contentType string, specialTag string) ([]typ
 
 	if err != nil {
 		log.Printf("Error while running query to get content: %v", err)
-		return nil, err
+		return nil, videoContent, err
 	}
 
 	// If we did not get any content it's because
 	// the playlist does not exist
 	if len(result.Items) == 0 {
-		return nil, errors.New("404")
+		return nil, videoContent, errors.New("404")
 	}
 
 	for _, i := range result.Items {
@@ -142,7 +142,7 @@ func QueryContent(vertical string, contentType string, specialTag string) ([]typ
 		err := attributevalue.UnmarshalMap(i, &content)
 		if err != nil {
 			log.Printf("Error unmarshalling: %v ", err)
-			return nil, err
+			return nil, videoContent, err
 		}
 
 		// If content status != active we need to ignore it
@@ -153,7 +153,7 @@ func QueryContent(vertical string, contentType string, specialTag string) ([]typ
 		contentList = append(contentList, content)
 	}
 
-	return contentList, nil
+	return contentList, videoContent, nil
 }
 
 // GetContentDetails ...

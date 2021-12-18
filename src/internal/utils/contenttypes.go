@@ -3,9 +3,12 @@ package utils
 // GetContentTypes returns all content types support by the platform
 func GetContentTypes() []string {
 	return []string{
+		"walkthroughs",
 		"tutorials",
-		"courses",
 		"books",
-		"resources",
+		"sdk",
+		"tools",
+		"threads",
+		"implementations",
 	}
 }

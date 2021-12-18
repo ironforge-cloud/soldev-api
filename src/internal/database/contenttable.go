@@ -131,8 +131,6 @@ func QueryContent(vertical string, contentType string, specialTag string) ([]typ
 		return nil, videoContent, err
 	}
 
-	// If we did not get any content it's because
-	// the playlist does not exist
 	if len(result.Items) == 0 {
 		return nil, videoContent, errors.New("404")
 	}

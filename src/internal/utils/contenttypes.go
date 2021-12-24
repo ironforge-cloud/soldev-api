@@ -10,5 +10,6 @@ func GetContentTypes() []string {
 		"tools",
 		"threads",
 		"implementations",
+		"spl",
 	}
 }

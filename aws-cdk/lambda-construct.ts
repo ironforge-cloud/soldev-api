@@ -49,6 +49,7 @@ export class Lambda extends Construct {
     this.GetContentByStatus();
     this.GetContentUsingSpecialTag();
     this.CheckContentByUrl();
+    this.GetContentTypes();
 
     this.GetTweets();
     this.GetPinnedTweets();
@@ -268,6 +269,37 @@ export class Lambda extends Construct {
 
     this.httpApi.addRoutes({
       path: "/content/{vertical}/{contentType}/{ID}",
+      methods: [HttpMethod.GET],
+      integration,
+    });
+  }
+
+  GetContentTypes(): void {
+    const lambdaFunction = new GoFunction(this, "get-content-types", {
+      entry: path.join(
+        process.cwd(),
+        "src",
+        "cmd",
+        "get-content-types",
+        "main.go"
+      ),
+      bundling: {
+        environment: {
+          GOARCH: "arm64",
+          GOOS: "linux",
+        },
+      },
+      memorySize: 1024,
+      architecture: lambda.Architecture.ARM_64,
+    });
+
+    const integration = new HttpLambdaIntegration(
+      "get-content-by-id-integration",
+      lambdaFunction
+    );
+
+    this.httpApi.addRoutes({
+      path: "/content/types",
       methods: [HttpMethod.GET],
       integration,
     });

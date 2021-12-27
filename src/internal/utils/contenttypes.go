@@ -11,5 +11,6 @@ func GetContentTypes() []string {
 		"threads",
 		"implementations",
 		"spl",
+		"security",
 	}
 }

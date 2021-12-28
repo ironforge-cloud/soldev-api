@@ -52,8 +52,8 @@ export class CloudFront extends Construct {
           cloudfront.CacheHeaderBehavior.allowList("Cache-Control"),
         queryStringBehavior: cloudfront.CacheQueryStringBehavior.all(),
         minTtl: Duration.seconds(0),
-        defaultTtl: Duration.minutes(1),
-        maxTtl: Duration.minutes(30),
+        defaultTtl: Duration.seconds(15),
+        maxTtl: Duration.minutes(1),
         enableAcceptEncodingGzip: true,
         enableAcceptEncodingBrotli: true,
       }

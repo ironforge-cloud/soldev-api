@@ -65,7 +65,7 @@ func APIGateway200(data []byte) Response {
 			"Access-Control-Allow-Origin":      "*",
 			"Access-Control-Allow-Credentials": "true",
 			"Access-Control-Max-Age:":          "604800",
-			"Cache-Control":                    "public, max-age=60, s-maxage=120, proxy-revalidate, must-revalidate",
+			"Cache-Control":                    "public, max-age=1, s-maxage=1, proxy-revalidate, must-revalidate",
 		},
 		Body: body,
 	}

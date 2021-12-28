@@ -12,5 +12,6 @@ func GetContentTypes() []string {
 		"implementations",
 		"spl",
 		"security",
+		"scaffolds",
 	}
 }

@@ -77,7 +77,7 @@ func DeleteContent(content types.Content) error {
 }
 
 // QueryContent ...
-func QueryContent(vertical string, contentType string, specialTag string) ([]types.Content, bool, error) {
+func QueryContent(vertical string, contentType string, specialTag string, list string) ([]types.Content, bool, error) {
 	// TODO: Handle error
 	dynamo, _ := Client()
 	var contentList []types.Content
@@ -152,6 +152,49 @@ func QueryContent(vertical string, contentType string, specialTag string) ([]typ
 	}
 
 	return contentList, videoContent, nil
+}
+
+// ScanContent ...
+func ScanContent() ([]types.Content, error) {
+	// TODO: Handle error
+	dynamo, _ := Client()
+	var contentList []types.Content
+
+	result, err := dynamo.Scan(context.TODO(), &dynamodb.ScanInput{
+		TableName:        aws.String("Content"),
+		FilterExpression: aws.String("ContentType <> :ContentType"),
+		ExpressionAttributeValues: map[string]dynamoTypes.AttributeValue{
+			":ContentType": &dynamoTypes.AttributeValueMemberS{Value: "Playlist"},
+		},
+	})
+
+	if err != nil {
+		log.Printf("Error while running query to get content: %v", err)
+		return nil, err
+	}
+
+	if len(result.Items) == 0 {
+		return nil, errors.New("404")
+	}
+
+	for _, i := range result.Items {
+		var content types.Content
+		err := attributevalue.UnmarshalMap(i, &content)
+		if err != nil {
+			log.Printf("Error unmarshalling: %v ", err)
+			return nil, err
+		}
+
+		// If content status != active we need to ignore it
+		if content.ContentStatus != "active" {
+			continue
+		}
+
+		contentList = append(contentList, content)
+	}
+
+	return contentList, nil
+
 }
 
 // GetContentDetails ...

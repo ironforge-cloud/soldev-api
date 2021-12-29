@@ -10,6 +10,7 @@ type Content struct {
 
 	Position   int64 // content != playlists means weight
 	Tags       []string
+	Lists      string // TODO: in the future this will be a slice
 	SpecialTag string // "new", "hot", "best" and "old"
 
 	Url         string

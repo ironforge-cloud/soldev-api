@@ -10,7 +10,7 @@ import (
 // SyncTwitterList ..
 func SyncTwitterList() error {
 
-	tweets, err := providers.TwitterList("1452853465210933252")
+	tweets, err := providers.TwitterList("1444990678371651585")
 	if err != nil {
 		return err
 	}
@@ -23,9 +23,9 @@ func SyncTwitterList() error {
 	return nil
 }
 
-// GetTweets finds all the Tweets for the Twitter List 1452853465210933252
+// GetTweets finds all the Tweets for the Twitter List 1444990678371651585
 func GetTweets() ([]types.TwitterListResponseData, error) {
-	tweets, err := database.QueryTweets("1452853465210933252")
+	tweets, err := database.QueryTweets("1444990678371651585")
 	if err != nil {
 		return nil, err
 	}

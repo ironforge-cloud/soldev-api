@@ -48,6 +48,7 @@ export class Lambda extends Construct {
     this.GetLiveContent();
     this.GetContentByStatus();
     this.GetContentUsingSpecialTag();
+    this.GetContentUsingList();
     this.CheckContentByUrl();
     this.GetContentTypes();
 
@@ -236,6 +237,39 @@ export class Lambda extends Construct {
 
     this.httpApi.addRoutes({
       path: "/content/specialtag/{specialTag}",
+      methods: [HttpMethod.GET],
+      integration,
+    });
+  }
+
+  GetContentUsingList(): void {
+    const lambdaFunction = new GoFunction(this, "get-content-using-list", {
+      entry: path.join(
+        process.cwd(),
+        "src",
+        "cmd",
+        "get-content-using-list",
+        "main.go"
+      ),
+      bundling: {
+        environment: {
+          GOARCH: "arm64",
+          GOOS: "linux",
+        },
+      },
+      memorySize: 1024,
+      architecture: lambda.Architecture.ARM_64,
+    });
+
+    this.contentTable.grantReadData(lambdaFunction);
+
+    const integration = new HttpLambdaIntegration(
+      "get-content-using-list-integration",
+      lambdaFunction
+    );
+
+    this.httpApi.addRoutes({
+      path: "/content/lists/{listName}",
       methods: [HttpMethod.GET],
       integration,
     });

@@ -21,7 +21,7 @@ type Request events.APIGatewayProxyRequest
 func Handler(ctx context.Context, request Request) (Response, error) {
 
 	// Get list of content with new specialTag
-	content, _, err := database.QueryContent("", "", "New")
+	content, _, err := database.QueryContent("", "", "New", "")
 
 	if err != nil {
 		log.Printf("Error reviewing new content: %v ", err)

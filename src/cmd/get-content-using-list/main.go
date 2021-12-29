@@ -1,7 +1,7 @@
 package main
 
 import (
-	"api/internal/database"
+	"api/internal/modules"
 	"api/internal/utils"
 	"context"
 	"encoding/json"
@@ -19,10 +19,10 @@ type Response events.APIGatewayProxyResponse
 type Request events.APIGatewayProxyRequest
 
 func Handler(ctx context.Context, request Request) (Response, error) {
-	var specialTag = request.PathParameters["specialTag"]
+	var list = request.PathParameters["listName"]
 
 	// Get list of content with specialTag
-	content, _, err := database.QueryContent("", "", specialTag, "")
+	queryResponse, err := modules.FilterContentByList(list)
 
 	// Check if error exist
 	if err != nil && err.Error() == "404" {
@@ -32,7 +32,7 @@ func Handler(ctx context.Context, request Request) (Response, error) {
 	}
 
 	// Marshal the response into json bytes
-	response, err := json.Marshal(&content)
+	response, err := json.Marshal(&queryResponse)
 	fmt.Println("Response", response)
 	if err != nil {
 		return Response(utils.APIGateway500(err)), nil

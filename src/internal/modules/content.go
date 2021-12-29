@@ -66,7 +66,7 @@ func CreateContent(content types.Content) error {
 // TODO: The sort functionality in this method can be improved. Too many iterations
 func GetContent(vertical string, contentType string, tags string, specialTag string) ([]types.Content, error) {
 
-	contentList, videoContent, err := database.QueryContent(vertical, contentType, "")
+	contentList, videoContent, err := database.QueryContent(vertical, contentType, "", "")
 
 	if err != nil {
 		return nil, err
@@ -140,7 +140,7 @@ func GetContent(vertical string, contentType string, tags string, specialTag str
 
 		for _, content := range contentSortedByPosition {
 			for _, requestTag := range tagsSlice {
-				// if content is added we need to break this range too\
+				// if content is added we need to break this range too
 				shouldBreak := false
 
 				// If item includes
@@ -233,6 +233,7 @@ func ReviewNewContent(content []types.Content) ([]types.Content, error) {
 // DoesContentExist checks if there are content in the database with the
 // specified url
 func DoesContentExist(url string) (bool, error) {
+
 	contentList, err := database.GetContentByUrl(url)
 
 	if err != nil {
@@ -246,6 +247,29 @@ func DoesContentExist(url string) (bool, error) {
 	}
 
 	return false, nil
+}
+
+// FilterContentByList ...
+func FilterContentByList(filter string) ([]types.Content, error) {
+	// Get list of content with specialTag
+	queryResponse, err := database.ScanContent()
+
+	if err != nil {
+		return nil, err
+	}
+
+	var content []types.Content
+	for _, item := range queryResponse {
+		if item.Lists != filter {
+			continue
+		}
+
+		content = append(content, item)
+	}
+
+	content = sortContentByPosition(content)
+
+	return content, nil
 }
 
 // mergeContent ...

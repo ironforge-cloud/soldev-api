@@ -76,7 +76,7 @@ func GetYoutubePlaylist(playlist types.Playlist) ([]types.Content, error) {
 }
 
 func checkPromote(contentID string) int8 {
-	promotedList := []string{"scorFcEXZD8", "cvW8EwGHw8U", "QcXcqIYflv8", "atAYmR32eeE", "sOlq1S6e1HE", "r7D2CA8qPHY", "vbESNVOZflU"}
+	promotedList := []string{"itWOUcsMjT4", "scorFcEXZD8", "cvW8EwGHw8U", "QcXcqIYflv8", "atAYmR32eeE", "sOlq1S6e1HE", "r7D2CA8qPHY", "vbESNVOZflU"}
 
 	for _, ID := range promotedList {
 		if ID == contentID {

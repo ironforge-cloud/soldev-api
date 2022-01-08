@@ -745,7 +745,7 @@ export class Lambda extends Construct {
     );
 
     this.httpApi.addRoutes({
-      path: "/tweets",
+      path: "/tweets/{listID}",
       methods: [HttpMethod.GET],
       integration,
     });

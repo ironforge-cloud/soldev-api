@@ -22,6 +22,7 @@ func Handler(ctx context.Context, request Request) (Response, error) {
 
 	// Marshal the response into json bytes
 	response, err := json.Marshal(&list)
+
 	if err != nil {
 		return Response(utils.APIGateway500(err)), nil
 	}

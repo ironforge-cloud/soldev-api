@@ -18,8 +18,9 @@ type Response events.APIGatewayProxyResponse
 type Request events.APIGatewayProxyRequest
 
 func Handler(ctx context.Context, request Request) (Response, error) {
+	var listID = request.PathParameters["listID"]
 
-	tweets, err := modules.GetTweets()
+	tweets, err := modules.GetTweets(listID)
 
 	// Check if error exist
 	if err != nil {

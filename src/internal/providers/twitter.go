@@ -28,7 +28,7 @@ func TwitterList(listID string) ([]types.TwitterListResponseData, error) {
 	q.Add("tweet.fields", "attachments,author_id,public_metrics,created_at,id,in_reply_to_user_id,referenced_tweets,text")
 	q.Add("user.fields", "id,name,profile_image_url,protected,url,username,verified")
 	q.Add("media.fields", "duration_ms,height,media_key,preview_image_url,type,url,width,public_metrics")
-	q.Add("max_results", "10")
+	q.Add("max_results", "20")
 	req.URL.RawQuery = q.Encode()
 
 	// Send req using http Client
@@ -132,7 +132,7 @@ func findReferencedTweets(referencedTweets []types.ReferencedTweet, tweets []typ
 				ReferencedTweet: tweet.ReferencedTweet,
 				Author:          findAuthor(tweet.AuthorID, users),
 				Type:            referencedTweet.Type,
-				Expdate:         time.Now().Add(time.Hour * 72).Unix(),
+				Expdate:         time.Now().Add(time.Hour * 24).Unix(),
 			}
 
 			fullReferencedTweets = append(fullReferencedTweets, data)

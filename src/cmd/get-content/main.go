@@ -5,6 +5,7 @@ import (
 	"api/internal/utils"
 	"context"
 	"encoding/json"
+	"fmt"
 
 	"github.com/aws/aws-lambda-go/lambda"
 
@@ -24,6 +25,8 @@ func Handler(ctx context.Context, request Request) (Response, error) {
 	var specialTags = request.QueryStringParameters["specialTags"]
 
 	content, err := modules.GetContent(vertical, contentType, tags, specialTags)
+
+	fmt.Println("Content", content)
 
 	// Check if error exist
 	if err != nil && err.Error() == "404" {

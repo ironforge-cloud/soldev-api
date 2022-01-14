@@ -77,52 +77,6 @@ func TwitchRequest(endpoint string, typeOfID string, ID string) ([]byte, error) 
 	return bodyBytes, nil
 }
 
-// FetchSavedStreams fetches all saved streams
-func FetchSavedStreams(userId string) ([]types.Content, error) {
-	bodyBytes, err := TwitchRequest("videos", "user_id", userId)
-	if err != nil {
-		return nil, err
-	}
-
-	// Structure to convert bytes
-	var twitchResponse types.TwitchResponse
-	// Unmarshal bytes into a iterable structure
-	err = json.Unmarshal(bodyBytes, &twitchResponse)
-	if err != nil {
-		return nil, err
-	}
-
-	var content []types.Content
-	for _, item := range twitchResponse.Data {
-
-		// Thumbnail size needs to be added it to the URL
-		imgWithSize := strings.Replace(item.Img, "%{width}", "360", -1)
-		imgWithSize = strings.Replace(imgWithSize, "%{height}", "202", -1)
-
-		video := types.Content{
-			PK:            "Solana#twitch-solana",
-			SK:            item.ID,
-			ContentStatus: "active",
-			Url:           item.Url,
-			Title:         item.Title,
-			PublishedAt:   item.CreatedAt,
-			Img:           imgWithSize,
-			Author:        item.Channel,
-			ContentType:   "Playlist",
-			Vertical:      "Solana",
-			PlaylistID:    "twitch-solana",
-			Promoted:      0,
-			Live:          0,
-			Provider:      "Twitch",
-			Expdate:       time.Now().Add(time.Hour * 12).Unix(),
-		}
-
-		content = append(content, video)
-	}
-
-	return content, nil
-}
-
 // FetchLiveStream ...
 func FetchLiveStream(userID string) ([]types.Content, error) {
 	bodyBytes, err := TwitchRequest("streams", "user_id", userID)

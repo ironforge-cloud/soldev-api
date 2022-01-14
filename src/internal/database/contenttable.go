@@ -26,6 +26,25 @@ func SaveContent(content types.Content) error {
 		content.SpecialTag = "0"
 	}
 
+	// We send data to Algolia only when is "active", and delete data from Algolia
+	// when "inactive".
+	algoliaContent := types.AlgoliaRecord{ObjectID: content.SK, Content: content}
+	if content.ContentStatus == "active" {
+		// Save Data in Algolia
+		_, err := AlgoliaIndex().SaveObjects(algoliaContent)
+		if err != nil {
+			log.Printf("Error while saving data in Algolia: %v ", err)
+			return err
+		}
+	} else if content.ContentStatus == "inactive" {
+		// Delete data from Algolia
+		_, err := AlgoliaIndex().DeleteObject(content.SK)
+		if err != nil {
+			log.Printf("Error while deleting data in Algolia: %v ", err)
+			return err
+		}
+	}
+
 	data, err := attributevalue.MarshalMap(content)
 	if err != nil {
 		log.Printf("Error while marshalling: %v ", err)

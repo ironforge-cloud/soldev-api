@@ -48,3 +48,8 @@ type Twitch struct {
 type TwitchResponse struct {
 	Data []Twitch `json:"data"`
 }
+
+type AlgoliaRecord struct {
+	ObjectID string `json:"objectID"`
+	Content
+}

@@ -43,29 +43,6 @@ func YoutubeIntegration() error {
 	return nil
 }
 
-func TwitchIntegration() error {
-	// Fetch Twitch from streams from the Science and Technology channel
-	content, err := providers.FetchSavedStreams(os.Getenv("TWITCH_SOLANA_ID"))
-	if err != nil {
-		return err
-	}
-
-	// If there are no content, return an error
-	if content == nil {
-		return errors.New("404")
-	}
-
-	// Save Twitch streams in the content table
-	for _, item := range content {
-		err = database.SaveContent(item)
-		if err != nil {
-			return err
-		}
-	}
-
-	return nil
-}
-
 // TwitchLiveStream processes live streams, right now only Solana channel
 func TwitchLiveStream() error {
 

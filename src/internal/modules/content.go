@@ -20,6 +20,12 @@ func SaveContent(content []types.Content) error {
 			item.PublishedAt = strconv.FormatInt(time.Now().Unix(), 10)
 		}
 
+		// if content status is inactive for more than a week, we can delete
+		// the content.
+		if item.ContentStatus == "inactive" {
+			item.Expdate = time.Now().Add(time.Hour * 168).Unix()
+		}
+
 		// If PK data doesn't match Vertical#ContentType we need to
 		// delete the old content
 		if item.PK != item.Vertical+"#"+item.ContentType {
@@ -50,8 +56,10 @@ func CreateContent(content types.Content) error {
 	// Data sanitization
 	content.PK = content.Vertical + "#" + content.ContentType
 	content.SK, _ = shortid.Generate()
-	content.ContentStatus = "submitted"
 	content.PublishedAt = strconv.FormatInt(time.Now().Unix(), 10)
+	if content.ContentStatus == "" {
+		content.ContentStatus = "submitted"
+	}
 
 	err := database.SaveContent(content)
 
@@ -219,7 +227,7 @@ func ReviewNewContent(content []types.Content) ([]types.Content, error) {
 		// PublishedAt is a string, we need to convert it first
 		contentDate, _ := strconv.ParseInt(item.PublishedAt, 10, 64)
 		// Adding 15 days to the content date
-		limitDate := time.Unix(contentDate, 0).Add(time.Hour * 360).Unix()
+		limitDate := time.Unix(contentDate, 0).Add(time.Hour * 168).Unix()
 
 		// Check if we need to remove to update the DB record to remove the tag
 		if limitDate < time.Now().Unix() {

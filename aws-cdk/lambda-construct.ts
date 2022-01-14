@@ -57,7 +57,6 @@ export class Lambda extends Construct {
     this.PinTweet();
 
     this.SyncYoutubeContent();
-    this.SyncTwitchContent();
     this.SyncTwitchLiveStreams();
     this.SyncTwitter();
 
@@ -408,6 +407,13 @@ export class Lambda extends Construct {
           GOOS: "linux",
         },
       },
+      environment: {
+        ALGOLIA_APP_ID: process.env.ALGOLIA_APP_ID as string,
+        ALGOLIA_API_KEY: process.env.ALGOLIA_API_KEY as string,
+        DEV_ALGOLIA_INDEX: process.env.DEV_ALGOLIA_INDEX as string,
+        PROD_ALGOLIA_INDEX: process.env.PROD_ALGOLIA_INDEX as string,
+        AWS_ENV: process.env.AWS_ENV as string,
+      },
       timeout: Duration.seconds(30),
       memorySize: 1024,
       architecture: lambda.Architecture.ARM_64,
@@ -435,6 +441,13 @@ export class Lambda extends Construct {
           GOARCH: "arm64",
           GOOS: "linux",
         },
+      },
+      environment: {
+        ALGOLIA_APP_ID: process.env.ALGOLIA_APP_ID as string,
+        ALGOLIA_API_KEY: process.env.ALGOLIA_API_KEY as string,
+        DEV_ALGOLIA_INDEX: process.env.DEV_ALGOLIA_INDEX as string,
+        PROD_ALGOLIA_INDEX: process.env.PROD_ALGOLIA_INDEX as string,
+        AWS_ENV: process.env.AWS_ENV as string,
       },
       memorySize: 1024,
       architecture: lambda.Architecture.ARM_64,
@@ -465,6 +478,11 @@ export class Lambda extends Construct {
       ),
       environment: {
         YOUTUBE_API_KEY: process.env.YOUTUBE_API_KEY as string,
+        ALGOLIA_APP_ID: process.env.ALGOLIA_APP_ID as string,
+        ALGOLIA_API_KEY: process.env.ALGOLIA_API_KEY as string,
+        DEV_ALGOLIA_INDEX: process.env.DEV_ALGOLIA_INDEX as string,
+        PROD_ALGOLIA_INDEX: process.env.PROD_ALGOLIA_INDEX as string,
+        AWS_ENV: process.env.AWS_ENV as string,
       },
       timeout: Duration.minutes(5),
       bundling: {
@@ -492,51 +510,6 @@ export class Lambda extends Construct {
     });
 
     const rule = new events.Rule(this, "YoutubeCron", {
-      schedule: events.Schedule.expression("rate(12 hours)"),
-    });
-
-    rule.addTarget(new targets.LambdaFunction(lambdaFunction));
-  }
-
-  SyncTwitchContent(): void {
-    const lambdaFunction = new GoFunction(this, "sync-twitch-content", {
-      entry: path.join(
-        process.cwd(),
-        "src",
-        "cmd",
-        "sync-twitch-content",
-        "main.go"
-      ),
-      bundling: {
-        environment: {
-          GOARCH: "arm64",
-          GOOS: "linux",
-        },
-      },
-      environment: {
-        TWITCH_CLIENT_ID: process.env.TWITCH_CLIENT_ID as string,
-        TWITCH_CLIENT_SECRET: process.env.TWITCH_CLIENT_SECRET as string,
-        TWITCH_HELIX_URL: process.env.TWITCH_HELIX_URL as string,
-        TWITCH_SOLANA_ID: process.env.TWITCH_SOLANA_ID as string,
-      },
-      memorySize: 1024,
-      architecture: lambda.Architecture.ARM_64,
-    });
-
-    this.contentTable.grantReadWriteData(lambdaFunction);
-
-    const integration = new HttpLambdaIntegration(
-      "sync-twitch-content-integration",
-      lambdaFunction
-    );
-
-    this.httpApi.addRoutes({
-      path: "/integrations/twitch",
-      methods: [HttpMethod.GET],
-      integration,
-    });
-
-    const rule = new events.Rule(this, "TwitchCron", {
       schedule: events.Schedule.expression("rate(12 hours)"),
     });
 

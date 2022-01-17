@@ -449,6 +449,7 @@ export class Lambda extends Construct {
         PROD_ALGOLIA_INDEX: process.env.PROD_ALGOLIA_INDEX as string,
         AWS_ENV: process.env.AWS_ENV as string,
       },
+      timeout: Duration.seconds(30),
       memorySize: 1024,
       architecture: lambda.Architecture.ARM_64,
     });

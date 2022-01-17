@@ -3,10 +3,12 @@ package modules
 import (
 	"api/internal/database"
 	"api/internal/types"
+	"api/internal/utils"
 	"errors"
 	"sort"
 	"strconv"
 	"strings"
+	"sync"
 	"time"
 
 	"github.com/teris-io/shortid"
@@ -15,37 +17,93 @@ import (
 // SaveContent ...
 func SaveContent(content []types.Content) error {
 
-	for _, item := range content {
-		if len(item.PublishedAt) == 0 {
-			item.PublishedAt = strconv.FormatInt(time.Now().Unix(), 10)
-		}
+	contentLength := len(content)
+	var wg sync.WaitGroup
+	wg.Add(contentLength)
 
-		// if content status is inactive for more than a week, we can delete
-		// the content.
-		if item.ContentStatus == "inactive" {
-			item.Expdate = time.Now().Add(time.Hour * 168).Unix()
-		}
+	for i := 0; i < contentLength; i++ {
+		go func(i int) error {
+			defer wg.Done()
 
-		// If PK data doesn't match Vertical#ContentType we need to
-		// delete the old content
-		if item.PK != item.Vertical+"#"+item.ContentType {
-			err := database.DeleteContent(item)
+			if len(content[i].PublishedAt) == 0 {
+				content[i].PublishedAt = strconv.FormatInt(time.Now().Unix(), 10)
+			}
+
+			// if content status is inactive for more than a week, we can delete
+			// the content.
+			if content[i].ContentStatus == "inactive" {
+				content[i].Expdate = time.Now().Add(time.Hour * 168).Unix()
+			}
+
+			// If PK data doesn't match Vertical#ContentType we need to
+			// delete the old content
+			if content[i].PK != content[i].Vertical+"#"+content[i].ContentType {
+				err := database.DeleteContent(content[i])
+
+				if err != nil {
+					return err
+				}
+			}
+
+			// Check if content has Img assigned. If not, try to find one using
+			// html meta tags.
+			if content[i].Img == "" {
+				content[i].Img = utils.GetImageIfExist(content[i].Url)
+			}
+
+			// Change PK to the new one
+			content[i].PK = content[i].Vertical + "#" + content[i].ContentType
+
+			// Saving content
+			err := database.SaveContent(content[i])
 
 			if err != nil {
 				return err
 			}
-		}
 
-		// Change PK to the new one
-		item.PK = item.Vertical + "#" + item.ContentType
-
-		// Saving content
-		err := database.SaveContent(item)
-
-		if err != nil {
-			return err
-		}
+			return nil
+		}(i)
 	}
+
+	wg.Wait()
+
+	//for _, item := range content {
+	//	if len(item.PublishedAt) == 0 {
+	//		item.PublishedAt = strconv.FormatInt(time.Now().Unix(), 10)
+	//	}
+	//
+	//	// if content status is inactive for more than a week, we can delete
+	//	// the content.
+	//	if item.ContentStatus == "inactive" {
+	//		item.Expdate = time.Now().Add(time.Hour * 168).Unix()
+	//	}
+	//
+	//	// If PK data doesn't match Vertical#ContentType we need to
+	//	// delete the old content
+	//	if item.PK != item.Vertical+"#"+item.ContentType {
+	//		err := database.DeleteContent(item)
+	//
+	//		if err != nil {
+	//			return err
+	//		}
+	//	}
+	//
+	//	// Check if content has Img assigned. If not, try to find one using
+	//	// html meta tags.
+	//	if item.Img == "" {
+	//		item.Img = utils.GetImageIfExist(item.Url)
+	//	}
+	//
+	//	// Change PK to the new one
+	//	item.PK = item.Vertical + "#" + item.ContentType
+	//
+	//	// Saving content
+	//	err := database.SaveContent(item)
+	//
+	//	if err != nil {
+	//		return err
+	//	}
+	//}
 
 	return nil
 }
@@ -59,6 +117,12 @@ func CreateContent(content types.Content) error {
 	content.PublishedAt = strconv.FormatInt(time.Now().Unix(), 10)
 	if content.ContentStatus == "" {
 		content.ContentStatus = "submitted"
+	}
+
+	// Check if content has Img assigned. If not, try to find one using
+	// html meta tags.
+	if content.Img == "" && content.ContentType != "Playlist" {
+		content.Img = utils.GetImageIfExist(content.Url)
 	}
 
 	err := database.SaveContent(content)

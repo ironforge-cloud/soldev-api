@@ -44,8 +44,6 @@ export class Lambda extends Construct {
     this.PostContent();
     this.GetContent();
     this.GetContentById();
-    this.GetPromotedContent();
-    this.GetLiveContent();
     this.GetContentByStatus();
     this.GetContentUsingSpecialTag();
     this.GetContentUsingList();
@@ -57,7 +55,6 @@ export class Lambda extends Construct {
     this.PinTweet();
 
     this.SyncYoutubeContent();
-    this.SyncTwitchLiveStreams();
     this.SyncTwitter();
 
     this.ReviewNewContent();
@@ -515,117 +512,6 @@ export class Lambda extends Construct {
     });
 
     rule.addTarget(new targets.LambdaFunction(lambdaFunction));
-  }
-
-  SyncTwitchLiveStreams(): void {
-    const lambdaFunction = new GoFunction(this, "sync-twitch-livestreams", {
-      entry: path.join(
-        process.cwd(),
-        "src",
-        "cmd",
-        "sync-twitch-livestreams",
-        "main.go"
-      ),
-      bundling: {
-        environment: {
-          GOARCH: "arm64",
-          GOOS: "linux",
-        },
-      },
-      environment: {
-        TWITCH_CLIENT_ID: process.env.TWITCH_CLIENT_ID as string,
-        TWITCH_CLIENT_SECRET: process.env.TWITCH_CLIENT_SECRET as string,
-        TWITCH_HELIX_URL: process.env.TWITCH_HELIX_URL as string,
-        TWITCH_SOLANA_ID: process.env.TWITCH_SOLANA_ID as string,
-      },
-      memorySize: 1024,
-      architecture: lambda.Architecture.ARM_64,
-    });
-
-    this.contentTable.grantWriteData(lambdaFunction);
-
-    const integration = new HttpLambdaIntegration(
-      "sync-twitch-live-streams-integration",
-      lambdaFunction
-    );
-
-    this.httpApi.addRoutes({
-      path: "/integrations/twitch-livestreams",
-      methods: [HttpMethod.GET],
-      integration,
-    });
-
-    const rule = new events.Rule(this, "TwitchLiveStreamCron", {
-      schedule: events.Schedule.expression("rate(1 minute)"),
-    });
-
-    rule.addTarget(new targets.LambdaFunction(lambdaFunction));
-  }
-
-  GetLiveContent(): void {
-    const lambdaFunction = new GoFunction(this, "get-live-content", {
-      entry: path.join(
-        process.cwd(),
-        "src",
-        "cmd",
-        "get-live-content",
-        "main.go"
-      ),
-      bundling: {
-        environment: {
-          GOARCH: "arm64",
-          GOOS: "linux",
-        },
-      },
-      memorySize: 1024,
-      architecture: lambda.Architecture.ARM_64,
-    });
-
-    this.contentTable.grantReadData(lambdaFunction);
-
-    const integration = new HttpLambdaIntegration(
-      "get-live-content-integration",
-      lambdaFunction
-    );
-
-    this.httpApi.addRoutes({
-      path: "/content/{vertical}/live",
-      methods: [HttpMethod.GET],
-      integration,
-    });
-  }
-
-  GetPromotedContent(): void {
-    const lambdaFunction = new GoFunction(this, "get-promoted-content", {
-      entry: path.join(
-        process.cwd(),
-        "src",
-        "cmd",
-        "get-promoted-content",
-        "main.go"
-      ),
-      bundling: {
-        environment: {
-          GOARCH: "arm64",
-          GOOS: "linux",
-        },
-      },
-      memorySize: 1024,
-      architecture: lambda.Architecture.ARM_64,
-    });
-
-    this.contentTable.grantReadData(lambdaFunction);
-
-    const integration = new HttpLambdaIntegration(
-      "get-promoted-content-integration",
-      lambdaFunction
-    );
-
-    this.httpApi.addRoutes({
-      path: "/content/{vertical}/promoted",
-      methods: [HttpMethod.GET],
-      integration,
-    });
   }
 
   GetContentByStatus(): void {

@@ -6,7 +6,6 @@ import (
 	"context"
 	"errors"
 	"log"
-	"time"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/feature/dynamodb/attributevalue"
@@ -288,88 +287,6 @@ func QueryContentByStatus(status string) ([]types.Content, error) {
 			return nil, err
 		}
 		contentList = append(contentList, content)
-	}
-
-	return contentList, nil
-}
-
-// GetLive search in the Content Table in the DB
-// and return all the promoted content
-func GetLive(vertical string) ([]types.Content, error) {
-	// TODO: Handle error
-	dynamo, _ := Client()
-	var contentList []types.Content
-
-	result, err := dynamo.Query(context.TODO(), &dynamodb.QueryInput{
-		TableName:              aws.String("Content"),
-		IndexName:              aws.String("live-gsi"),
-		KeyConditionExpression: aws.String("Vertical = :vertical and Live = :live"),
-		ExpressionAttributeValues: map[string]dynamoTypes.AttributeValue{
-			":live":     &dynamoTypes.AttributeValueMemberN{Value: "1"},
-			":vertical": &dynamoTypes.AttributeValueMemberS{Value: vertical},
-		},
-	})
-
-	if err != nil {
-		log.Printf("Error while requesting live content: %v", err)
-		return nil, err
-	}
-
-	for _, i := range result.Items {
-		var content types.Content
-		err := attributevalue.UnmarshalMap(i, &content)
-		if err != nil {
-			log.Printf("Error unmarshalling: %v ", err)
-			return nil, err
-		}
-		contentList = append(contentList, content)
-	}
-
-	return contentList, nil
-}
-
-// GetPromoted search in the Content Table in the DB
-// and return all the promoted content
-func GetPromoted(vertical string) ([]types.Content, error) {
-	// TODO: Handle error
-	dynamo, _ := Client()
-	var contentList []types.Content
-
-	result, err := dynamo.Query(context.TODO(), &dynamodb.QueryInput{
-		TableName:              aws.String("Content"),
-		IndexName:              aws.String("promoted-gsi"),
-		KeyConditionExpression: aws.String(" Vertical = :vertical and Promoted = :promoted"),
-		ExpressionAttributeValues: map[string]dynamoTypes.AttributeValue{
-			":promoted": &dynamoTypes.AttributeValueMemberN{Value: "1"},
-			":vertical": &dynamoTypes.AttributeValueMemberS{Value: vertical},
-		},
-	})
-
-	if err != nil {
-		log.Printf("Error while requesting promoted content: %v", err)
-		return nil, err
-	}
-
-	for _, i := range result.Items {
-		var content types.Content
-		err := attributevalue.UnmarshalMap(i, &content)
-		if err != nil {
-			log.Printf("Error unmarshalling: %v ", err)
-			return nil, err
-		}
-
-		// Skip Youtube content if is older than 24 hours
-		if content.Provider == "Youtube" && content.Expdate > time.Now().Add(time.Hour*24).Unix() {
-			continue
-		}
-
-		// TODO: find a better way to handle sort
-		// Small sort, because we want the Live Stream first in the UI
-		if content.PlaylistID != "twitch-solana" {
-			contentList = append(contentList, content)
-		} else {
-			contentList = append([]types.Content{content}, contentList...)
-		}
 	}
 
 	return contentList, nil

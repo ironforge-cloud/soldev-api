@@ -244,26 +244,6 @@ func GetContentByID(vertical string, contentType string, id string) (types.Conte
 	return content, nil
 }
 
-// Live finds content labeled as live in the DB
-func Live(vertical string) ([]types.Content, error) {
-	contentList, err := database.GetLive(vertical)
-	if err != nil {
-		return nil, err
-	}
-
-	return contentList, nil
-}
-
-// Promoted finds content labeled as promoted in the DB
-func Promoted(vertical string) ([]types.Content, error) {
-	contentList, err := database.GetPromoted(vertical)
-	if err != nil {
-		return nil, err
-	}
-
-	return contentList, nil
-}
-
 // GetContentByStatus ...
 func GetContentByStatus(status string) ([]types.Content, error) {
 	content, err := database.QueryContentByStatus(status)

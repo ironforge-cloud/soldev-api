@@ -24,29 +24,12 @@ type Content struct {
 
 	// Video specific
 	PlaylistID string
-	Promoted   int8
-	Live       int8
+	Promoted   int8 // deprecated
+	Live       int8 // deprecated
 	Provider   string
 	Expdate    int64
 
 	PlaylistTitle string
-}
-
-// Twitch ...
-type Twitch struct {
-	ID          string `json:"id"`
-	Channel     string `json:"user_name"`
-	Title       string `json:"title"`
-	Description string `json:"description"`
-	Img         string `json:"thumbnail_url"`
-	StartedAt   string `json:"started_at"`
-	CreatedAt   string `json:"created_at"`
-	Url         string `json:"url"`
-}
-
-// TwitchResponse ...
-type TwitchResponse struct {
-	Data []Twitch `json:"data"`
 }
 
 type AlgoliaRecord struct {

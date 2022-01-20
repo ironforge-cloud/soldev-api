@@ -5,7 +5,6 @@ import (
 	"api/internal/providers"
 	"api/internal/types"
 	"errors"
-	"os"
 )
 
 // YoutubeIntegration find all YouTube playlists in our DB, using the
@@ -33,30 +32,6 @@ func YoutubeIntegration() error {
 	}
 
 	// Save the videos of each playlist in the content table
-	for _, item := range content {
-		err = database.SaveContent(item)
-		if err != nil {
-			return err
-		}
-	}
-
-	return nil
-}
-
-// TwitchLiveStream processes live streams, right now only Solana channel
-func TwitchLiveStream() error {
-
-	content, err := providers.FetchLiveStream(os.Getenv("TWITCH_SOLANA_ID"))
-	if err != nil {
-		return err
-	}
-
-	// The stream did not start yet, we can just exit.
-	if content == nil {
-		return nil
-	}
-
-	// Save Twitch streams in the content table
 	for _, item := range content {
 		err = database.SaveContent(item)
 		if err != nil {

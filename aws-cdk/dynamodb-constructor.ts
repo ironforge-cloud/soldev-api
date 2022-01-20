@@ -113,30 +113,6 @@ export class DynamoDB extends Construct {
     });
 
     this.contentTable.addGlobalSecondaryIndex({
-      indexName: "promoted-gsi",
-      sortKey: {
-        name: "Promoted",
-        type: AttributeType.NUMBER,
-      },
-      partitionKey: {
-        name: "Vertical",
-        type: AttributeType.STRING,
-      },
-    });
-
-    this.contentTable.addGlobalSecondaryIndex({
-      indexName: "live-gsi",
-      sortKey: {
-        name: "Live",
-        type: AttributeType.NUMBER,
-      },
-      partitionKey: {
-        name: "Vertical",
-        type: AttributeType.STRING,
-      },
-    });
-
-    this.contentTable.addGlobalSecondaryIndex({
       indexName: "status-gsi",
       partitionKey: {
         name: "ContentStatus",

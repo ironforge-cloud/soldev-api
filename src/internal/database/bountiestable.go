@@ -2,6 +2,7 @@ package database
 
 import (
 	"api/internal/types"
+	"database/sql"
 	"time"
 
 	"github.com/jmoiron/sqlx"
@@ -78,6 +79,8 @@ func GetBountyByID(db *sqlx.DB, bountyID string) (types.Bounty, error) {
 // TODO: Join these three sql queries
 func GetStatsByCompanyID(db *sqlx.DB, companyID string) (types.BountyStats, error) {
 	var stats types.BountyStats
+	var totalBalance sql.NullInt64
+	var paidBalance sql.NullInt64
 
 	err := db.Get(&stats,
 		`SELECT COUNT(*)  AS total_bounties FROM bounties WHERE company_id = $1 AND status = 'active' OR status = 'paid'`,
@@ -87,7 +90,7 @@ func GetStatsByCompanyID(db *sqlx.DB, companyID string) (types.BountyStats, erro
 		return types.BountyStats{}, err
 	}
 
-	err = db.Get(&stats,
+	err = db.Get(&totalBalance,
 		`select sum (reward) as total_balance from bounties where company_id = $1 AND status = 'active'
 OR status = 'paid'`,
 		companyID)
@@ -96,12 +99,24 @@ OR status = 'paid'`,
 		return types.BountyStats{}, err
 	}
 
-	err = db.Get(&stats,
+	if totalBalance.Valid {
+		stats.TotalBalance = int(totalBalance.Int64)
+	} else {
+		stats.TotalBalance = 0
+	}
+
+	err = db.Get(&paidBalance,
 		`select sum (reward) as paid_balance from bounties where company_id = $1 AND status = 'paid'`,
 		companyID)
 
 	if err != nil {
 		return types.BountyStats{}, err
+	}
+
+	if paidBalance.Valid {
+		stats.PaidBalance = int(paidBalance.Int64)
+	} else {
+		stats.PaidBalance = 0
 	}
 
 	return stats, nil
@@ -110,6 +125,8 @@ OR status = 'paid'`,
 // GetBountyStats returns bounties stats
 func GetBountyStats(db *sqlx.DB) (types.BountyStats, error) {
 	var stats types.BountyStats
+	var totalBalance sql.NullInt64
+	var paidBalance sql.NullInt64
 
 	err := db.Get(&stats,
 		`SELECT COUNT(*) AS total_bounties FROM bounties where status = 'active' OR status = 'paid'`)
@@ -118,7 +135,7 @@ func GetBountyStats(db *sqlx.DB) (types.BountyStats, error) {
 		return types.BountyStats{}, err
 	}
 
-	err = db.Get(&stats,
+	err = db.Get(&totalBalance,
 		`select sum (reward) as total_balance from bounties where status = 'active'
 OR status = 'paid'`)
 
@@ -126,11 +143,23 @@ OR status = 'paid'`)
 		return types.BountyStats{}, err
 	}
 
-	err = db.Get(&stats,
+	if totalBalance.Valid {
+		stats.TotalBalance = int(totalBalance.Int64)
+	} else {
+		stats.TotalBalance = 0
+	}
+
+	err = db.Get(&paidBalance,
 		`select sum (reward) as paid_balance from bounties where status = 'paid'`)
 
 	if err != nil {
 		return types.BountyStats{}, err
+	}
+
+	if paidBalance.Valid {
+		stats.PaidBalance = int(paidBalance.Int64)
+	} else {
+		stats.PaidBalance = 0
 	}
 
 	return stats, nil

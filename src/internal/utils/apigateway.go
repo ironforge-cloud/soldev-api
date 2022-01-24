@@ -18,6 +18,7 @@ func APIGateway500(err error) Response {
 			"Access-Control-Allow-Origin":      "*",
 			"Access-Control-Allow-Credentials": "true",
 			"Access-Control-Max-Age:":          "604800",
+			"Content-Type":                     "application/json",
 		},
 	}
 }
@@ -31,6 +32,7 @@ func APIGateway404(err error) Response {
 			"Access-Control-Allow-Origin":      "*",
 			"Access-Control-Allow-Credentials": "true",
 			"Access-Control-Max-Age:":          "604800",
+			"Content-Type":                     "application/json",
 		},
 	}
 }
@@ -43,6 +45,7 @@ func APIGateway204() Response {
 			"Access-Control-Allow-Origin":      "*",
 			"Access-Control-Allow-Credentials": "true",
 			"Access-Control-Max-Age:":          "604800",
+			"Content-Type":                     "application/json",
 		},
 	}
 }
@@ -66,6 +69,30 @@ func APIGateway200(data []byte) Response {
 			"Access-Control-Allow-Credentials": "true",
 			"Access-Control-Max-Age:":          "604800",
 			"Cache-Control":                    "public, max-age=1, s-maxage=1, proxy-revalidate, must-revalidate",
+		},
+		Body: body,
+	}
+}
+
+// APIGateway200 responds status code 200 and a payload using APIGatewayProxyResponse
+func APIGateway200Cache(data []byte) Response {
+	// Helper for UI empty responses
+	body := ""
+	if len(data) == 0 {
+		body = "[]"
+	} else {
+		body = string(data)
+	}
+
+	return Response{
+		StatusCode: 200,
+		Headers: map[string]string{
+			"Content-Type":                     "application/json",
+			"Etag":                             etag(data),
+			"Access-Control-Allow-Origin":      "*",
+			"Access-Control-Allow-Credentials": "true",
+			"Access-Control-Max-Age:":          "604800",
+			"Cache-Control":                    "public, max-age=30, s-maxage=30, proxy-revalidate, must-revalidate",
 		},
 		Body: body,
 	}

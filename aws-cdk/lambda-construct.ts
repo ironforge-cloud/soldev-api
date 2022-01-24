@@ -58,6 +58,332 @@ export class Lambda extends Construct {
     this.SyncTwitter();
 
     this.ReviewNewContent();
+
+    this.PutCompany();
+    this.PostCompany();
+    this.DeleteCompany();
+    this.GetCompanyByID();
+    this.GetAllCompanies();
+
+    this.PostBounty();
+    this.PutBounty();
+    this.DeleteBounty();
+    this.GetAllBountiesByCompanyID();
+    this.GetBountyByID();
+  }
+
+  GetBountyByID(): void {
+    const lambdaFunction = new GoFunction(this, "get-bounty-by-id", {
+      entry: path.join(
+        process.cwd(),
+        "src",
+        "cmd",
+        "get-bounty-by-id",
+        "main.go"
+      ),
+      bundling: {
+        environment: {
+          GOARCH: "arm64",
+          GOOS: "linux",
+        },
+      },
+      environment: {
+        POSTGRESQL_URL: process.env.POSTGRESQL_URL as string,
+      },
+      memorySize: 1024,
+      architecture: lambda.Architecture.ARM_64,
+    });
+
+    const integration = new HttpLambdaIntegration(
+      "get-bounty-by-id-integration",
+      lambdaFunction
+    );
+
+    this.httpApi.addRoutes({
+      path: "/bounties/{bountyID}",
+      methods: [HttpMethod.GET],
+      integration,
+    });
+  }
+
+  GetAllBountiesByCompanyID(): void {
+    const lambdaFunction = new GoFunction(
+      this,
+      "get-all-bounties-by-companyid",
+      {
+        entry: path.join(
+          process.cwd(),
+          "src",
+          "cmd",
+          "get-all-bounties-by-companyid",
+          "main.go"
+        ),
+        bundling: {
+          environment: {
+            GOARCH: "arm64",
+            GOOS: "linux",
+          },
+        },
+        environment: {
+          POSTGRESQL_URL: process.env.POSTGRESQL_URL as string,
+        },
+        memorySize: 1024,
+        architecture: lambda.Architecture.ARM_64,
+      }
+    );
+
+    const integration = new HttpLambdaIntegration(
+      "get-all-bounties-by-companyid-integration",
+      lambdaFunction
+    );
+
+    this.httpApi.addRoutes({
+      path: "/bounties/company/{companyID}",
+      methods: [HttpMethod.GET],
+      integration,
+    });
+  }
+
+  PutBounty(): void {
+    const lambdaFunction = new GoFunction(this, "put-bounty", {
+      entry: path.join(process.cwd(), "src", "cmd", "put-bounty", "main.go"),
+      bundling: {
+        environment: {
+          GOARCH: "arm64",
+          GOOS: "linux",
+        },
+      },
+      environment: {
+        POSTGRESQL_URL: process.env.POSTGRESQL_URL as string,
+      },
+      memorySize: 1024,
+      architecture: lambda.Architecture.ARM_64,
+    });
+
+    const integration = new HttpLambdaIntegration(
+      "put-bounty-integration",
+      lambdaFunction
+    );
+
+    this.httpApi.addRoutes({
+      path: "/bounties/{bountyID}",
+      methods: [HttpMethod.PUT],
+      integration,
+    });
+  }
+
+  DeleteBounty(): void {
+    const lambdaFunction = new GoFunction(this, "delete-bounty", {
+      entry: path.join(process.cwd(), "src", "cmd", "delete-bounty", "main.go"),
+      bundling: {
+        environment: {
+          GOARCH: "arm64",
+          GOOS: "linux",
+        },
+      },
+      environment: {
+        POSTGRESQL_URL: process.env.POSTGRESQL_URL as string,
+      },
+      memorySize: 1024,
+      architecture: lambda.Architecture.ARM_64,
+    });
+
+    const integration = new HttpLambdaIntegration(
+      "delete-bounty-integration",
+      lambdaFunction
+    );
+
+    this.httpApi.addRoutes({
+      path: "/bounties/{bountyID}",
+      methods: [HttpMethod.DELETE],
+      integration,
+    });
+  }
+
+  PostBounty(): void {
+    const lambdaFunction = new GoFunction(this, "post-bounty", {
+      entry: path.join(process.cwd(), "src", "cmd", "post-bounty", "main.go"),
+      bundling: {
+        environment: {
+          GOARCH: "arm64",
+          GOOS: "linux",
+        },
+      },
+      environment: {
+        POSTGRESQL_URL: process.env.POSTGRESQL_URL as string,
+      },
+      memorySize: 1024,
+      architecture: lambda.Architecture.ARM_64,
+    });
+
+    const integration = new HttpLambdaIntegration(
+      "post-bounty-integration",
+      lambdaFunction
+    );
+
+    this.httpApi.addRoutes({
+      path: "/bounties/company/{companyID}",
+      methods: [HttpMethod.POST],
+      integration,
+    });
+  }
+
+  GetAllCompanies(): void {
+    const lambdaFunction = new GoFunction(this, "get-all-companies", {
+      entry: path.join(
+        process.cwd(),
+        "src",
+        "cmd",
+        "get-all-companies",
+        "main.go"
+      ),
+      bundling: {
+        environment: {
+          GOARCH: "arm64",
+          GOOS: "linux",
+        },
+      },
+      environment: {
+        POSTGRESQL_URL: process.env.POSTGRESQL_URL as string,
+      },
+      memorySize: 1024,
+      architecture: lambda.Architecture.ARM_64,
+    });
+
+    const integration = new HttpLambdaIntegration(
+      "get-all-companies-integration",
+      lambdaFunction
+    );
+
+    this.httpApi.addRoutes({
+      path: "/companies",
+      methods: [HttpMethod.GET],
+      integration,
+    });
+  }
+
+  GetCompanyByID(): void {
+    const lambdaFunction = new GoFunction(this, "get-company-by-id", {
+      entry: path.join(
+        process.cwd(),
+        "src",
+        "cmd",
+        "get-company-by-id",
+        "main.go"
+      ),
+      bundling: {
+        environment: {
+          GOARCH: "arm64",
+          GOOS: "linux",
+        },
+      },
+      environment: {
+        POSTGRESQL_URL: process.env.POSTGRESQL_URL as string,
+      },
+      memorySize: 1024,
+      architecture: lambda.Architecture.ARM_64,
+    });
+
+    const integration = new HttpLambdaIntegration(
+      "get-company-by-id-integration",
+      lambdaFunction
+    );
+
+    this.httpApi.addRoutes({
+      path: "/companies/{companyID}",
+      methods: [HttpMethod.GET],
+      integration,
+    });
+  }
+
+  DeleteCompany(): void {
+    const lambdaFunction = new GoFunction(this, "delete-company", {
+      entry: path.join(
+        process.cwd(),
+        "src",
+        "cmd",
+        "delete-company",
+        "main.go"
+      ),
+      bundling: {
+        environment: {
+          GOARCH: "arm64",
+          GOOS: "linux",
+        },
+      },
+      environment: {
+        POSTGRESQL_URL: process.env.POSTGRESQL_URL as string,
+      },
+      memorySize: 1024,
+      architecture: lambda.Architecture.ARM_64,
+    });
+
+    const integration = new HttpLambdaIntegration(
+      "delete-company-integration",
+      lambdaFunction
+    );
+
+    this.httpApi.addRoutes({
+      path: "/companies/{companyID}",
+      methods: [HttpMethod.DELETE],
+      integration,
+    });
+  }
+
+  PutCompany(): void {
+    const lambdaFunction = new GoFunction(this, "put-company", {
+      entry: path.join(process.cwd(), "src", "cmd", "put-company", "main.go"),
+      bundling: {
+        environment: {
+          GOARCH: "arm64",
+          GOOS: "linux",
+        },
+      },
+      environment: {
+        POSTGRESQL_URL: process.env.POSTGRESQL_URL as string,
+      },
+      memorySize: 1024,
+      architecture: lambda.Architecture.ARM_64,
+    });
+
+    const integration = new HttpLambdaIntegration(
+      "put-company-integration",
+      lambdaFunction
+    );
+
+    this.httpApi.addRoutes({
+      path: "/companies/{companyID}",
+      methods: [HttpMethod.PUT],
+      integration,
+    });
+  }
+
+  PostCompany(): void {
+    const lambdaFunction = new GoFunction(this, "post-company", {
+      entry: path.join(process.cwd(), "src", "cmd", "post-company", "main.go"),
+      bundling: {
+        environment: {
+          GOARCH: "arm64",
+          GOOS: "linux",
+        },
+      },
+      environment: {
+        POSTGRESQL_URL: process.env.POSTGRESQL_URL as string,
+      },
+      memorySize: 1024,
+      architecture: lambda.Architecture.ARM_64,
+    });
+
+    const integration = new HttpLambdaIntegration(
+      "post-company-integration",
+      lambdaFunction
+    );
+
+    this.httpApi.addRoutes({
+      path: "/companies",
+      methods: [HttpMethod.POST],
+      integration,
+    });
   }
 
   GetUser(): void {

@@ -1,0 +1,3570 @@
+Resources:
+  apigatewaydomain7FED5056:
+    Type: AWS::ApiGatewayV2::DomainName
+    Properties:
+      DomainName: gateway.dev.soldev.app
+      DomainNameConfigurations:
+      - CertificateArn: arn:aws:acm:us-east-1:245308171953:certificate/aa552e06-f298-49d8-8b86-0f44369b290a
+        EndpointType: REGIONAL
+    Metadata:
+      aws:cdk:path: soldev-api/api-gateway-domain/Resource
+  apiA9E0BAD5:
+    Type: AWS::ApiGatewayV2::Api
+    Properties:
+      CorsConfiguration:
+        AllowHeaders:
+        - Authorization
+        - Content-Type
+        - If-None-Match
+        AllowMethods:
+        - '*'
+        AllowOrigins:
+        - '*'
+        MaxAge: 864000
+      Name: api
+      ProtocolType: HTTP
+    Metadata:
+      aws:cdk:path: soldev-api/api/api/Resource
+  apiDefaultStageD73E5DE4:
+    Type: AWS::ApiGatewayV2::Stage
+    Properties:
+      ApiId:
+        Ref: apiA9E0BAD5
+      StageName: $default
+      AccessLogSettings:
+        DestinationArn:
+          Fn::GetAtt:
+          - apiapigatewayaccesslogsB63F884E
+          - Arn
+        Format: '{"requestId":"$context.requestId","userAgent":"$context.identity.userAgent","sourceIp":"$context.identity.sourceIp","requestTime":"$context.requestTime","requestTimeEpoch":"$context.requestTimeEpoch","httpMethod":"$context.httpMethod","path":"$context.path","status":"$context.status","protocol":"$context.protocol","responseLength":"$context.responseLength","integrationLatency":"$context.integration.latency","responseLatency":"$context.responseLatency","domainName":"$context.domainName","error":"$context.error.message"}'
+      AutoDeploy: true
+    DependsOn:
+    - apigatewaydomain7FED5056
+    Metadata:
+      aws:cdk:path: soldev-api/api/api/DefaultStage/Resource
+  apiDefaultStagesoldevapiapigatewaydomainundefinedF8319CC2:
+    Type: AWS::ApiGatewayV2::ApiMapping
+    Properties:
+      ApiId:
+        Ref: apiA9E0BAD5
+      DomainName:
+        Ref: apigatewaydomain7FED5056
+      Stage: $default
+    DependsOn:
+    - apigatewaydomain7FED5056
+    - apiDefaultStageD73E5DE4
+    Metadata:
+      aws:cdk:path: soldev-api/api/api/DefaultStage/soldev-api--api-gateway-domainundefined/Resource
+  apiGETuserpublicKeygetuserintegrationPermission82A47FB3:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName:
+        Fn::GetAtt:
+        - fngetuser5499B99F
+        - Arn
+      Principal: apigateway.amazonaws.com
+      SourceArn:
+        Fn::Join:
+        - ''
+        - - 'arn:'
+          - Ref: AWS::Partition
+          - ':execute-api:'
+          - Ref: AWS::Region
+          - ':'
+          - Ref: AWS::AccountId
+          - ':'
+          - Ref: apiA9E0BAD5
+          - /*/*/user/{publicKey}
+    Metadata:
+      aws:cdk:path: soldev-api/api/api/GET--user--{publicKey}/get-user-integration-Permission
+  apiGETuserpublicKeygetuserintegration9CB5B44B:
+    Type: AWS::ApiGatewayV2::Integration
+    Properties:
+      ApiId:
+        Ref: apiA9E0BAD5
+      IntegrationType: AWS_PROXY
+      IntegrationUri:
+        Fn::GetAtt:
+        - fngetuser5499B99F
+        - Arn
+      PayloadFormatVersion: '2.0'
+    Metadata:
+      aws:cdk:path: soldev-api/api/api/GET--user--{publicKey}/get-user-integration/Resource
+  apiGETuserpublicKeyA7C17E5E:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId:
+        Ref: apiA9E0BAD5
+      RouteKey: GET /user/{publicKey}
+      AuthorizationType: NONE
+      Target:
+        Fn::Join:
+        - ''
+        - - integrations/
+          - Ref: apiGETuserpublicKeygetuserintegration9CB5B44B
+    Metadata:
+      aws:cdk:path: soldev-api/api/api/GET--user--{publicKey}/Resource
+  apiPUTuserputuserintegrationPermissionCB6A696B:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName:
+        Fn::GetAtt:
+        - fnputuser897956F9
+        - Arn
+      Principal: apigateway.amazonaws.com
+      SourceArn:
+        Fn::Join:
+        - ''
+        - - 'arn:'
+          - Ref: AWS::Partition
+          - ':execute-api:'
+          - Ref: AWS::Region
+          - ':'
+          - Ref: AWS::AccountId
+          - ':'
+          - Ref: apiA9E0BAD5
+          - /*/*/user
+    Metadata:
+      aws:cdk:path: soldev-api/api/api/PUT--user/put-user-integration-Permission
+  apiPUTuserputuserintegration33136ADC:
+    Type: AWS::ApiGatewayV2::Integration
+    Properties:
+      ApiId:
+        Ref: apiA9E0BAD5
+      IntegrationType: AWS_PROXY
+      IntegrationUri:
+        Fn::GetAtt:
+        - fnputuser897956F9
+        - Arn
+      PayloadFormatVersion: '2.0'
+    Metadata:
+      aws:cdk:path: soldev-api/api/api/PUT--user/put-user-integration/Resource
+  apiPUTuser38B23D7E:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId:
+        Ref: apiA9E0BAD5
+      RouteKey: PUT /user
+      AuthorizationType: NONE
+      Target:
+        Fn::Join:
+        - ''
+        - - integrations/
+          - Ref: apiPUTuserputuserintegration33136ADC
+    Metadata:
+      aws:cdk:path: soldev-api/api/api/PUT--user/Resource
+  apiGETplaylistsverticalgetplaylistsintegrationPermission7D1C24F2:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName:
+        Fn::GetAtt:
+        - fngetplaylists203EB066
+        - Arn
+      Principal: apigateway.amazonaws.com
+      SourceArn:
+        Fn::Join:
+        - ''
+        - - 'arn:'
+          - Ref: AWS::Partition
+          - ':execute-api:'
+          - Ref: AWS::Region
+          - ':'
+          - Ref: AWS::AccountId
+          - ':'
+          - Ref: apiA9E0BAD5
+          - /*/*/playlists/{vertical}
+    Metadata:
+      aws:cdk:path: soldev-api/api/api/GET--playlists--{vertical}/get-playlists-integration-Permission
+  apiGETplaylistsverticalgetplaylistsintegrationCFD83149:
+    Type: AWS::ApiGatewayV2::Integration
+    Properties:
+      ApiId:
+        Ref: apiA9E0BAD5
+      IntegrationType: AWS_PROXY
+      IntegrationUri:
+        Fn::GetAtt:
+        - fngetplaylists203EB066
+        - Arn
+      PayloadFormatVersion: '2.0'
+    Metadata:
+      aws:cdk:path: soldev-api/api/api/GET--playlists--{vertical}/get-playlists-integration/Resource
+  apiGETplaylistsvertical6F26C613:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId:
+        Ref: apiA9E0BAD5
+      RouteKey: GET /playlists/{vertical}
+      AuthorizationType: NONE
+      Target:
+        Fn::Join:
+        - ''
+        - - integrations/
+          - Ref: apiGETplaylistsverticalgetplaylistsintegrationCFD83149
+    Metadata:
+      aws:cdk:path: soldev-api/api/api/GET--playlists--{vertical}/Resource
+  apiGETplaylistsverticalplaylistIDgetplaylistsbyidintegrationPermission09A00BF4:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName:
+        Fn::GetAtt:
+        - fngetplaylistsbyid7C655B1B
+        - Arn
+      Principal: apigateway.amazonaws.com
+      SourceArn:
+        Fn::Join:
+        - ''
+        - - 'arn:'
+          - Ref: AWS::Partition
+          - ':execute-api:'
+          - Ref: AWS::Region
+          - ':'
+          - Ref: AWS::AccountId
+          - ':'
+          - Ref: apiA9E0BAD5
+          - /*/*/playlists/{vertical}/{playlistID}
+    Metadata:
+      aws:cdk:path: soldev-api/api/api/GET--playlists--{vertical}--{playlistID}/get-playlists-by-id-integration-Permission
+  apiGETplaylistsverticalplaylistIDgetplaylistsbyidintegrationE63F2B0F:
+    Type: AWS::ApiGatewayV2::Integration
+    Properties:
+      ApiId:
+        Ref: apiA9E0BAD5
+      IntegrationType: AWS_PROXY
+      IntegrationUri:
+        Fn::GetAtt:
+        - fngetplaylistsbyid7C655B1B
+        - Arn
+      PayloadFormatVersion: '2.0'
+    Metadata:
+      aws:cdk:path: soldev-api/api/api/GET--playlists--{vertical}--{playlistID}/get-playlists-by-id-integration/Resource
+  apiGETplaylistsverticalplaylistID9F4CA26A:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId:
+        Ref: apiA9E0BAD5
+      RouteKey: GET /playlists/{vertical}/{playlistID}
+      AuthorizationType: NONE
+      Target:
+        Fn::Join:
+        - ''
+        - - integrations/
+          - Ref: apiGETplaylistsverticalplaylistIDgetplaylistsbyidintegrationE63F2B0F
+    Metadata:
+      aws:cdk:path: soldev-api/api/api/GET--playlists--{vertical}--{playlistID}/Resource
+  apiPUTplaylistsputplaylistsintegrationPermission90A22FE2:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName:
+        Fn::GetAtt:
+        - fnputplaylistsCE3CA7E4
+        - Arn
+      Principal: apigateway.amazonaws.com
+      SourceArn:
+        Fn::Join:
+        - ''
+        - - 'arn:'
+          - Ref: AWS::Partition
+          - ':execute-api:'
+          - Ref: AWS::Region
+          - ':'
+          - Ref: AWS::AccountId
+          - ':'
+          - Ref: apiA9E0BAD5
+          - /*/*/playlists
+    Metadata:
+      aws:cdk:path: soldev-api/api/api/PUT--playlists/put-playlists-integration-Permission
+  apiPUTplaylistsputplaylistsintegrationC26FE13A:
+    Type: AWS::ApiGatewayV2::Integration
+    Properties:
+      ApiId:
+        Ref: apiA9E0BAD5
+      IntegrationType: AWS_PROXY
+      IntegrationUri:
+        Fn::GetAtt:
+        - fnputplaylistsCE3CA7E4
+        - Arn
+      PayloadFormatVersion: '2.0'
+    Metadata:
+      aws:cdk:path: soldev-api/api/api/PUT--playlists/put-playlists-integration/Resource
+  apiPUTplaylistsCE21C87F:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId:
+        Ref: apiA9E0BAD5
+      RouteKey: PUT /playlists
+      AuthorizationType: NONE
+      Target:
+        Fn::Join:
+        - ''
+        - - integrations/
+          - Ref: apiPUTplaylistsputplaylistsintegrationC26FE13A
+    Metadata:
+      aws:cdk:path: soldev-api/api/api/PUT--playlists/Resource
+  apiPUTcontentputcontentintegrationPermissionA9A9B5B6:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName:
+        Fn::GetAtt:
+        - fnputcontent49D8EA2D
+        - Arn
+      Principal: apigateway.amazonaws.com
+      SourceArn:
+        Fn::Join:
+        - ''
+        - - 'arn:'
+          - Ref: AWS::Partition
+          - ':execute-api:'
+          - Ref: AWS::Region
+          - ':'
+          - Ref: AWS::AccountId
+          - ':'
+          - Ref: apiA9E0BAD5
+          - /*/*/content
+    Metadata:
+      aws:cdk:path: soldev-api/api/api/PUT--content/put-content-integration-Permission
+  apiPUTcontentputcontentintegrationC949EBDD:
+    Type: AWS::ApiGatewayV2::Integration
+    Properties:
+      ApiId:
+        Ref: apiA9E0BAD5
+      IntegrationType: AWS_PROXY
+      IntegrationUri:
+        Fn::GetAtt:
+        - fnputcontent49D8EA2D
+        - Arn
+      PayloadFormatVersion: '2.0'
+    Metadata:
+      aws:cdk:path: soldev-api/api/api/PUT--content/put-content-integration/Resource
+  apiPUTcontentCF2602D4:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId:
+        Ref: apiA9E0BAD5
+      RouteKey: PUT /content
+      AuthorizationType: NONE
+      Target:
+        Fn::Join:
+        - ''
+        - - integrations/
+          - Ref: apiPUTcontentputcontentintegrationC949EBDD
+    Metadata:
+      aws:cdk:path: soldev-api/api/api/PUT--content/Resource
+  apiPOSTcontentpostcontentintegrationPermission9B0BD558:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName:
+        Fn::GetAtt:
+        - fnpostcontent1C355459
+        - Arn
+      Principal: apigateway.amazonaws.com
+      SourceArn:
+        Fn::Join:
+        - ''
+        - - 'arn:'
+          - Ref: AWS::Partition
+          - ':execute-api:'
+          - Ref: AWS::Region
+          - ':'
+          - Ref: AWS::AccountId
+          - ':'
+          - Ref: apiA9E0BAD5
+          - /*/*/content
+    Metadata:
+      aws:cdk:path: soldev-api/api/api/POST--content/post-content-integration-Permission
+  apiPOSTcontentpostcontentintegration3F55565F:
+    Type: AWS::ApiGatewayV2::Integration
+    Properties:
+      ApiId:
+        Ref: apiA9E0BAD5
+      IntegrationType: AWS_PROXY
+      IntegrationUri:
+        Fn::GetAtt:
+        - fnpostcontent1C355459
+        - Arn
+      PayloadFormatVersion: '2.0'
+    Metadata:
+      aws:cdk:path: soldev-api/api/api/POST--content/post-content-integration/Resource
+  apiPOSTcontent47B13DBC:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId:
+        Ref: apiA9E0BAD5
+      RouteKey: POST /content
+      AuthorizationType: NONE
+      Target:
+        Fn::Join:
+        - ''
+        - - integrations/
+          - Ref: apiPOSTcontentpostcontentintegration3F55565F
+    Metadata:
+      aws:cdk:path: soldev-api/api/api/POST--content/Resource
+  apiGETcontentverticalcontentTypegetcontentintegrationPermissionC411D03C:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName:
+        Fn::GetAtt:
+        - fngetcontent8AE80068
+        - Arn
+      Principal: apigateway.amazonaws.com
+      SourceArn:
+        Fn::Join:
+        - ''
+        - - 'arn:'
+          - Ref: AWS::Partition
+          - ':execute-api:'
+          - Ref: AWS::Region
+          - ':'
+          - Ref: AWS::AccountId
+          - ':'
+          - Ref: apiA9E0BAD5
+          - /*/*/content/{vertical}/{contentType}
+    Metadata:
+      aws:cdk:path: soldev-api/api/api/GET--content--{vertical}--{contentType}/get-content-integration-Permission
+  apiGETcontentverticalcontentTypegetcontentintegrationB782331A:
+    Type: AWS::ApiGatewayV2::Integration
+    Properties:
+      ApiId:
+        Ref: apiA9E0BAD5
+      IntegrationType: AWS_PROXY
+      IntegrationUri:
+        Fn::GetAtt:
+        - fngetcontent8AE80068
+        - Arn
+      PayloadFormatVersion: '2.0'
+    Metadata:
+      aws:cdk:path: soldev-api/api/api/GET--content--{vertical}--{contentType}/get-content-integration/Resource
+  apiGETcontentverticalcontentType7FC06760:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId:
+        Ref: apiA9E0BAD5
+      RouteKey: GET /content/{vertical}/{contentType}
+      AuthorizationType: NONE
+      Target:
+        Fn::Join:
+        - ''
+        - - integrations/
+          - Ref: apiGETcontentverticalcontentTypegetcontentintegrationB782331A
+    Metadata:
+      aws:cdk:path: soldev-api/api/api/GET--content--{vertical}--{contentType}/Resource
+  apiGETcontentverticalcontentTypeIDgetcontentbyidintegrationPermission3B687C34:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName:
+        Fn::GetAtt:
+        - fngetcontentbyid3AECADC3
+        - Arn
+      Principal: apigateway.amazonaws.com
+      SourceArn:
+        Fn::Join:
+        - ''
+        - - 'arn:'
+          - Ref: AWS::Partition
+          - ':execute-api:'
+          - Ref: AWS::Region
+          - ':'
+          - Ref: AWS::AccountId
+          - ':'
+          - Ref: apiA9E0BAD5
+          - /*/*/content/{vertical}/{contentType}/{ID}
+    Metadata:
+      aws:cdk:path: soldev-api/api/api/GET--content--{vertical}--{contentType}--{ID}/get-content-by-id-integration-Permission
+  apiGETcontentverticalcontentTypeIDgetcontentbyidintegration7FAC2B8A:
+    Type: AWS::ApiGatewayV2::Integration
+    Properties:
+      ApiId:
+        Ref: apiA9E0BAD5
+      IntegrationType: AWS_PROXY
+      IntegrationUri:
+        Fn::GetAtt:
+        - fngetcontentbyid3AECADC3
+        - Arn
+      PayloadFormatVersion: '2.0'
+    Metadata:
+      aws:cdk:path: soldev-api/api/api/GET--content--{vertical}--{contentType}--{ID}/get-content-by-id-integration/Resource
+  apiGETcontentverticalcontentTypeIDE600D657:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId:
+        Ref: apiA9E0BAD5
+      RouteKey: GET /content/{vertical}/{contentType}/{ID}
+      AuthorizationType: NONE
+      Target:
+        Fn::Join:
+        - ''
+        - - integrations/
+          - Ref: apiGETcontentverticalcontentTypeIDgetcontentbyidintegration7FAC2B8A
+    Metadata:
+      aws:cdk:path: soldev-api/api/api/GET--content--{vertical}--{contentType}--{ID}/Resource
+  apiGETcontentstatusgetcontentbystatusintegrationPermissionEAF3F8B0:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName:
+        Fn::GetAtt:
+        - fngetcontentbystatusCC74B44C
+        - Arn
+      Principal: apigateway.amazonaws.com
+      SourceArn:
+        Fn::Join:
+        - ''
+        - - 'arn:'
+          - Ref: AWS::Partition
+          - ':execute-api:'
+          - Ref: AWS::Region
+          - ':'
+          - Ref: AWS::AccountId
+          - ':'
+          - Ref: apiA9E0BAD5
+          - /*/*/content/{status}
+    Metadata:
+      aws:cdk:path: soldev-api/api/api/GET--content--{status}/get-content-by-status-integration-Permission
+  apiGETcontentstatusgetcontentbystatusintegration866DF22D:
+    Type: AWS::ApiGatewayV2::Integration
+    Properties:
+      ApiId:
+        Ref: apiA9E0BAD5
+      IntegrationType: AWS_PROXY
+      IntegrationUri:
+        Fn::GetAtt:
+        - fngetcontentbystatusCC74B44C
+        - Arn
+      PayloadFormatVersion: '2.0'
+    Metadata:
+      aws:cdk:path: soldev-api/api/api/GET--content--{status}/get-content-by-status-integration/Resource
+  apiGETcontentstatusC0AD87F4:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId:
+        Ref: apiA9E0BAD5
+      RouteKey: GET /content/{status}
+      AuthorizationType: NONE
+      Target:
+        Fn::Join:
+        - ''
+        - - integrations/
+          - Ref: apiGETcontentstatusgetcontentbystatusintegration866DF22D
+    Metadata:
+      aws:cdk:path: soldev-api/api/api/GET--content--{status}/Resource
+  apiGETcontentspecialtagspecialTaggetcontentusingspecialtagintegrationPermissionA9D06824:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName:
+        Fn::GetAtt:
+        - fngetcontentusingspecialtag6A073DBC
+        - Arn
+      Principal: apigateway.amazonaws.com
+      SourceArn:
+        Fn::Join:
+        - ''
+        - - 'arn:'
+          - Ref: AWS::Partition
+          - ':execute-api:'
+          - Ref: AWS::Region
+          - ':'
+          - Ref: AWS::AccountId
+          - ':'
+          - Ref: apiA9E0BAD5
+          - /*/*/content/specialtag/{specialTag}
+    Metadata:
+      aws:cdk:path: soldev-api/api/api/GET--content--specialtag--{specialTag}/get-content-using-special-tag-integration-Permission
+  apiGETcontentspecialtagspecialTaggetcontentusingspecialtagintegrationAD4D83C7:
+    Type: AWS::ApiGatewayV2::Integration
+    Properties:
+      ApiId:
+        Ref: apiA9E0BAD5
+      IntegrationType: AWS_PROXY
+      IntegrationUri:
+        Fn::GetAtt:
+        - fngetcontentusingspecialtag6A073DBC
+        - Arn
+      PayloadFormatVersion: '2.0'
+    Metadata:
+      aws:cdk:path: soldev-api/api/api/GET--content--specialtag--{specialTag}/get-content-using-special-tag-integration/Resource
+  apiGETcontentspecialtagspecialTag1203FF79:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId:
+        Ref: apiA9E0BAD5
+      RouteKey: GET /content/specialtag/{specialTag}
+      AuthorizationType: NONE
+      Target:
+        Fn::Join:
+        - ''
+        - - integrations/
+          - Ref: apiGETcontentspecialtagspecialTaggetcontentusingspecialtagintegrationAD4D83C7
+    Metadata:
+      aws:cdk:path: soldev-api/api/api/GET--content--specialtag--{specialTag}/Resource
+  apiGETcontentlistslistNamegetcontentusinglistintegrationPermission3246D73B:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName:
+        Fn::GetAtt:
+        - fngetcontentusinglist283F95F4
+        - Arn
+      Principal: apigateway.amazonaws.com
+      SourceArn:
+        Fn::Join:
+        - ''
+        - - 'arn:'
+          - Ref: AWS::Partition
+          - ':execute-api:'
+          - Ref: AWS::Region
+          - ':'
+          - Ref: AWS::AccountId
+          - ':'
+          - Ref: apiA9E0BAD5
+          - /*/*/content/lists/{listName}
+    Metadata:
+      aws:cdk:path: soldev-api/api/api/GET--content--lists--{listName}/get-content-using-list-integration-Permission
+  apiGETcontentlistslistNamegetcontentusinglistintegrationEC703964:
+    Type: AWS::ApiGatewayV2::Integration
+    Properties:
+      ApiId:
+        Ref: apiA9E0BAD5
+      IntegrationType: AWS_PROXY
+      IntegrationUri:
+        Fn::GetAtt:
+        - fngetcontentusinglist283F95F4
+        - Arn
+      PayloadFormatVersion: '2.0'
+    Metadata:
+      aws:cdk:path: soldev-api/api/api/GET--content--lists--{listName}/get-content-using-list-integration/Resource
+  apiGETcontentlistslistNameB51FC32C:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId:
+        Ref: apiA9E0BAD5
+      RouteKey: GET /content/lists/{listName}
+      AuthorizationType: NONE
+      Target:
+        Fn::Join:
+        - ''
+        - - integrations/
+          - Ref: apiGETcontentlistslistNamegetcontentusinglistintegrationEC703964
+    Metadata:
+      aws:cdk:path: soldev-api/api/api/GET--content--lists--{listName}/Resource
+  apiGETcontentcheckgetcontentbyurlintegrationPermissionDAC703D7:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName:
+        Fn::GetAtt:
+        - fngetcheckcontentbyurl6598506B
+        - Arn
+      Principal: apigateway.amazonaws.com
+      SourceArn:
+        Fn::Join:
+        - ''
+        - - 'arn:'
+          - Ref: AWS::Partition
+          - ':execute-api:'
+          - Ref: AWS::Region
+          - ':'
+          - Ref: AWS::AccountId
+          - ':'
+          - Ref: apiA9E0BAD5
+          - /*/*/content/check
+    Metadata:
+      aws:cdk:path: soldev-api/api/api/GET--content--check/get-content-by-url-integration-Permission
+  apiGETcontentcheckgetcontentbyurlintegrationA8DA6375:
+    Type: AWS::ApiGatewayV2::Integration
+    Properties:
+      ApiId:
+        Ref: apiA9E0BAD5
+      IntegrationType: AWS_PROXY
+      IntegrationUri:
+        Fn::GetAtt:
+        - fngetcheckcontentbyurl6598506B
+        - Arn
+      PayloadFormatVersion: '2.0'
+    Metadata:
+      aws:cdk:path: soldev-api/api/api/GET--content--check/get-content-by-url-integration/Resource
+  apiGETcontentcheckF28DD887:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId:
+        Ref: apiA9E0BAD5
+      RouteKey: GET /content/check
+      AuthorizationType: NONE
+      Target:
+        Fn::Join:
+        - ''
+        - - integrations/
+          - Ref: apiGETcontentcheckgetcontentbyurlintegrationA8DA6375
+    Metadata:
+      aws:cdk:path: soldev-api/api/api/GET--content--check/Resource
+  apiGETcontenttypesgetcontentbyidintegrationPermission8885425C:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName:
+        Fn::GetAtt:
+        - fngetcontenttypes48D9D3D9
+        - Arn
+      Principal: apigateway.amazonaws.com
+      SourceArn:
+        Fn::Join:
+        - ''
+        - - 'arn:'
+          - Ref: AWS::Partition
+          - ':execute-api:'
+          - Ref: AWS::Region
+          - ':'
+          - Ref: AWS::AccountId
+          - ':'
+          - Ref: apiA9E0BAD5
+          - /*/*/content/types
+    Metadata:
+      aws:cdk:path: soldev-api/api/api/GET--content--types/get-content-by-id-integration-Permission
+  apiGETcontenttypesgetcontentbyidintegrationCAE93B8A:
+    Type: AWS::ApiGatewayV2::Integration
+    Properties:
+      ApiId:
+        Ref: apiA9E0BAD5
+      IntegrationType: AWS_PROXY
+      IntegrationUri:
+        Fn::GetAtt:
+        - fngetcontenttypes48D9D3D9
+        - Arn
+      PayloadFormatVersion: '2.0'
+    Metadata:
+      aws:cdk:path: soldev-api/api/api/GET--content--types/get-content-by-id-integration/Resource
+  apiGETcontenttypesD832606F:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId:
+        Ref: apiA9E0BAD5
+      RouteKey: GET /content/types
+      AuthorizationType: NONE
+      Target:
+        Fn::Join:
+        - ''
+        - - integrations/
+          - Ref: apiGETcontenttypesgetcontentbyidintegrationCAE93B8A
+    Metadata:
+      aws:cdk:path: soldev-api/api/api/GET--content--types/Resource
+  apiGETtweetslistIDgettweetsintegrationPermission8C00871F:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName:
+        Fn::GetAtt:
+        - fngettweets2E65D8DC
+        - Arn
+      Principal: apigateway.amazonaws.com
+      SourceArn:
+        Fn::Join:
+        - ''
+        - - 'arn:'
+          - Ref: AWS::Partition
+          - ':execute-api:'
+          - Ref: AWS::Region
+          - ':'
+          - Ref: AWS::AccountId
+          - ':'
+          - Ref: apiA9E0BAD5
+          - /*/*/tweets/{listID}
+    Metadata:
+      aws:cdk:path: soldev-api/api/api/GET--tweets--{listID}/get-tweets-integration-Permission
+  apiGETtweetslistIDgettweetsintegration0EDFCAC9:
+    Type: AWS::ApiGatewayV2::Integration
+    Properties:
+      ApiId:
+        Ref: apiA9E0BAD5
+      IntegrationType: AWS_PROXY
+      IntegrationUri:
+        Fn::GetAtt:
+        - fngettweets2E65D8DC
+        - Arn
+      PayloadFormatVersion: '2.0'
+    Metadata:
+      aws:cdk:path: soldev-api/api/api/GET--tweets--{listID}/get-tweets-integration/Resource
+  apiGETtweetslistIDCEE26527:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId:
+        Ref: apiA9E0BAD5
+      RouteKey: GET /tweets/{listID}
+      AuthorizationType: NONE
+      Target:
+        Fn::Join:
+        - ''
+        - - integrations/
+          - Ref: apiGETtweetslistIDgettweetsintegration0EDFCAC9
+    Metadata:
+      aws:cdk:path: soldev-api/api/api/GET--tweets--{listID}/Resource
+  apiGETtweetspinnedgetpinnedtweetsintegrationPermission5DF61785:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName:
+        Fn::GetAtt:
+        - fngetpinnedtweets3D972D10
+        - Arn
+      Principal: apigateway.amazonaws.com
+      SourceArn:
+        Fn::Join:
+        - ''
+        - - 'arn:'
+          - Ref: AWS::Partition
+          - ':execute-api:'
+          - Ref: AWS::Region
+          - ':'
+          - Ref: AWS::AccountId
+          - ':'
+          - Ref: apiA9E0BAD5
+          - /*/*/tweets/pinned
+    Metadata:
+      aws:cdk:path: soldev-api/api/api/GET--tweets--pinned/get-pinned-tweets-integration-Permission
+  apiGETtweetspinnedgetpinnedtweetsintegration83B35B06:
+    Type: AWS::ApiGatewayV2::Integration
+    Properties:
+      ApiId:
+        Ref: apiA9E0BAD5
+      IntegrationType: AWS_PROXY
+      IntegrationUri:
+        Fn::GetAtt:
+        - fngetpinnedtweets3D972D10
+        - Arn
+      PayloadFormatVersion: '2.0'
+    Metadata:
+      aws:cdk:path: soldev-api/api/api/GET--tweets--pinned/get-pinned-tweets-integration/Resource
+  apiGETtweetspinned1F613BE8:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId:
+        Ref: apiA9E0BAD5
+      RouteKey: GET /tweets/pinned
+      AuthorizationType: NONE
+      Target:
+        Fn::Join:
+        - ''
+        - - integrations/
+          - Ref: apiGETtweetspinnedgetpinnedtweetsintegration83B35B06
+    Metadata:
+      aws:cdk:path: soldev-api/api/api/GET--tweets--pinned/Resource
+  apiPATCHtweetspintweetIDgetpinnedtweetsintegrationPermissionB3B183F1:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName:
+        Fn::GetAtt:
+        - fnpatchpintweet34BEBEBF
+        - Arn
+      Principal: apigateway.amazonaws.com
+      SourceArn:
+        Fn::Join:
+        - ''
+        - - 'arn:'
+          - Ref: AWS::Partition
+          - ':execute-api:'
+          - Ref: AWS::Region
+          - ':'
+          - Ref: AWS::AccountId
+          - ':'
+          - Ref: apiA9E0BAD5
+          - /*/*/tweets/pin/{tweetID}
+    Metadata:
+      aws:cdk:path: soldev-api/api/api/PATCH--tweets--pin--{tweetID}/get-pinned-tweets-integration-Permission
+  apiPATCHtweetspintweetIDgetpinnedtweetsintegrationC1C41F27:
+    Type: AWS::ApiGatewayV2::Integration
+    Properties:
+      ApiId:
+        Ref: apiA9E0BAD5
+      IntegrationType: AWS_PROXY
+      IntegrationUri:
+        Fn::GetAtt:
+        - fnpatchpintweet34BEBEBF
+        - Arn
+      PayloadFormatVersion: '2.0'
+    Metadata:
+      aws:cdk:path: soldev-api/api/api/PATCH--tweets--pin--{tweetID}/get-pinned-tweets-integration/Resource
+  apiPATCHtweetspintweetIDC4DB58A6:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId:
+        Ref: apiA9E0BAD5
+      RouteKey: PATCH /tweets/pin/{tweetID}
+      AuthorizationType: NONE
+      Target:
+        Fn::Join:
+        - ''
+        - - integrations/
+          - Ref: apiPATCHtweetspintweetIDgetpinnedtweetsintegrationC1C41F27
+    Metadata:
+      aws:cdk:path: soldev-api/api/api/PATCH--tweets--pin--{tweetID}/Resource
+  apiGETintegrationsyoutubesyncyoutubecontentintegrationPermissionCFDCF8F8:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName:
+        Fn::GetAtt:
+        - fnsyncyoutubecontent4590DE6A
+        - Arn
+      Principal: apigateway.amazonaws.com
+      SourceArn:
+        Fn::Join:
+        - ''
+        - - 'arn:'
+          - Ref: AWS::Partition
+          - ':execute-api:'
+          - Ref: AWS::Region
+          - ':'
+          - Ref: AWS::AccountId
+          - ':'
+          - Ref: apiA9E0BAD5
+          - /*/*/integrations/youtube
+    Metadata:
+      aws:cdk:path: soldev-api/api/api/GET--integrations--youtube/sync-youtube-content-integration-Permission
+  apiGETintegrationsyoutubesyncyoutubecontentintegration8C8A9AFD:
+    Type: AWS::ApiGatewayV2::Integration
+    Properties:
+      ApiId:
+        Ref: apiA9E0BAD5
+      IntegrationType: AWS_PROXY
+      IntegrationUri:
+        Fn::GetAtt:
+        - fnsyncyoutubecontent4590DE6A
+        - Arn
+      PayloadFormatVersion: '2.0'
+    Metadata:
+      aws:cdk:path: soldev-api/api/api/GET--integrations--youtube/sync-youtube-content-integration/Resource
+  apiGETintegrationsyoutube58592C7D:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId:
+        Ref: apiA9E0BAD5
+      RouteKey: GET /integrations/youtube
+      AuthorizationType: NONE
+      Target:
+        Fn::Join:
+        - ''
+        - - integrations/
+          - Ref: apiGETintegrationsyoutubesyncyoutubecontentintegration8C8A9AFD
+    Metadata:
+      aws:cdk:path: soldev-api/api/api/GET--integrations--youtube/Resource
+  apiGETintegrationstwittersynctwitterintegrationPermission3CA6FC37:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName:
+        Fn::GetAtt:
+        - fnsynctwitterB544BBA1
+        - Arn
+      Principal: apigateway.amazonaws.com
+      SourceArn:
+        Fn::Join:
+        - ''
+        - - 'arn:'
+          - Ref: AWS::Partition
+          - ':execute-api:'
+          - Ref: AWS::Region
+          - ':'
+          - Ref: AWS::AccountId
+          - ':'
+          - Ref: apiA9E0BAD5
+          - /*/*/integrations/twitter
+    Metadata:
+      aws:cdk:path: soldev-api/api/api/GET--integrations--twitter/sync-twitter-integration-Permission
+  apiGETintegrationstwittersynctwitterintegration63811818:
+    Type: AWS::ApiGatewayV2::Integration
+    Properties:
+      ApiId:
+        Ref: apiA9E0BAD5
+      IntegrationType: AWS_PROXY
+      IntegrationUri:
+        Fn::GetAtt:
+        - fnsynctwitterB544BBA1
+        - Arn
+      PayloadFormatVersion: '2.0'
+    Metadata:
+      aws:cdk:path: soldev-api/api/api/GET--integrations--twitter/sync-twitter-integration/Resource
+  apiGETintegrationstwitterE4FF6AD4:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId:
+        Ref: apiA9E0BAD5
+      RouteKey: GET /integrations/twitter
+      AuthorizationType: NONE
+      Target:
+        Fn::Join:
+        - ''
+        - - integrations/
+          - Ref: apiGETintegrationstwittersynctwitterintegration63811818
+    Metadata:
+      aws:cdk:path: soldev-api/api/api/GET--integrations--twitter/Resource
+  apiPOSTcompaniespostcompanyintegrationPermissionED212BAD:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName:
+        Fn::GetAtt:
+        - fnpostcompany3FF005A9
+        - Arn
+      Principal: apigateway.amazonaws.com
+      SourceArn:
+        Fn::Join:
+        - ''
+        - - 'arn:'
+          - Ref: AWS::Partition
+          - ':execute-api:'
+          - Ref: AWS::Region
+          - ':'
+          - Ref: AWS::AccountId
+          - ':'
+          - Ref: apiA9E0BAD5
+          - /*/*/companies
+    Metadata:
+      aws:cdk:path: soldev-api/api/api/POST--companies/post-company-integration-Permission
+  apiPOSTcompaniespostcompanyintegration5EBC1D59:
+    Type: AWS::ApiGatewayV2::Integration
+    Properties:
+      ApiId:
+        Ref: apiA9E0BAD5
+      IntegrationType: AWS_PROXY
+      IntegrationUri:
+        Fn::GetAtt:
+        - fnpostcompany3FF005A9
+        - Arn
+      PayloadFormatVersion: '2.0'
+    Metadata:
+      aws:cdk:path: soldev-api/api/api/POST--companies/post-company-integration/Resource
+  apiPOSTcompaniesD6266EC5:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId:
+        Ref: apiA9E0BAD5
+      RouteKey: POST /companies
+      AuthorizationType: NONE
+      Target:
+        Fn::Join:
+        - ''
+        - - integrations/
+          - Ref: apiPOSTcompaniespostcompanyintegration5EBC1D59
+    Metadata:
+      aws:cdk:path: soldev-api/api/api/POST--companies/Resource
+  apiapigateway94843948:
+    Type: AWS::Route53::RecordSet
+    Properties:
+      Name: gateway.dev.soldev.app.
+      Type: A
+      AliasTarget:
+        DNSName:
+          Fn::GetAtt:
+          - apigatewaydomain7FED5056
+          - RegionalDomainName
+        HostedZoneId:
+          Fn::GetAtt:
+          - apigatewaydomain7FED5056
+          - RegionalHostedZoneId
+      HostedZoneId: Z01599181X9THEY4W66DB
+    Metadata:
+      aws:cdk:path: soldev-api/api/api-gateway/Resource
+  apiapigatewayaccesslogsB63F884E:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      RetentionInDays: 731
+    UpdateReplacePolicy: Retain
+    DeletionPolicy: Retain
+    Metadata:
+      aws:cdk:path: soldev-api/api/apigateway-access-logs/Resource
+  apiApiGWLogWriterRoleA0361779:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+        - Action: sts:AssumeRole
+          Effect: Allow
+          Principal:
+            Service: apigateway.amazonaws.com
+        Version: '2012-10-17'
+    Metadata:
+      aws:cdk:path: soldev-api/api/ApiGWLogWriterRole/Resource
+  apiApiGWLogWriterRoleDefaultPolicy0E1E3F48:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyDocument:
+        Statement:
+        - Action:
+          - logs:CreateLogGroup
+          - logs:CreateLogStream
+          - logs:DescribeLogGroups
+          - logs:DescribeLogStreams
+          - logs:PutLogEvents
+          - logs:GetLogEvents
+          - logs:FilterLogEvents
+          Effect: Allow
+          Resource: '*'
+        - Action:
+          - logs:CreateLogStream
+          - logs:PutLogEvents
+          Effect: Allow
+          Resource:
+            Fn::GetAtt:
+            - apiapigatewayaccesslogsB63F884E
+            - Arn
+        Version: '2012-10-17'
+      PolicyName: apiApiGWLogWriterRoleDefaultPolicy0E1E3F48
+      Roles:
+      - Ref: apiApiGWLogWriterRoleA0361779
+    Metadata:
+      aws:cdk:path: soldev-api/api/ApiGWLogWriterRole/DefaultPolicy/Resource
+  cloudfrontsoldevapicachepolicy60DE9363:
+    Type: AWS::CloudFront::CachePolicy
+    Properties:
+      CachePolicyConfig:
+        Comment: A default policy for SolDev API
+        DefaultTTL: 15
+        MaxTTL: 60
+        MinTTL: 0
+        Name: soldev-api-cache-policy
+        ParametersInCacheKeyAndForwardedToOrigin:
+          CookiesConfig:
+            CookieBehavior: none
+          EnableAcceptEncodingBrotli: true
+          EnableAcceptEncodingGzip: true
+          HeadersConfig:
+            HeaderBehavior: whitelist
+            Headers:
+            - Cache-Control
+          QueryStringsConfig:
+            QueryStringBehavior: all
+    Metadata:
+      aws:cdk:path: soldev-api/cloudfront/soldev-api-cache-policy/Resource
+  cloudfrontapidistributionLoggingBucket8DFC9A3B:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+        - ServerSideEncryptionByDefault:
+            SSEAlgorithm: AES256
+    UpdateReplacePolicy: Retain
+    DeletionPolicy: Retain
+    Metadata:
+      aws:cdk:path: soldev-api/cloudfront/api-distribution/LoggingBucket/Resource
+  cloudfrontapidistributionLoggingBucketPolicy196A5587:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket:
+        Ref: cloudfrontapidistributionLoggingBucket8DFC9A3B
+      PolicyDocument:
+        Statement:
+        - Action: s3:*
+          Condition:
+            Bool:
+              aws:SecureTransport: 'false'
+          Effect: Deny
+          Principal:
+            AWS: '*'
+          Resource:
+          - Fn::GetAtt:
+            - cloudfrontapidistributionLoggingBucket8DFC9A3B
+            - Arn
+          - Fn::Join:
+            - ''
+            - - Fn::GetAtt:
+                - cloudfrontapidistributionLoggingBucket8DFC9A3B
+                - Arn
+              - /*
+        Version: '2012-10-17'
+    Metadata:
+      aws:cdk:path: soldev-api/cloudfront/api-distribution/LoggingBucket/Policy/Resource
+  cloudfrontapidistributionAA65815D:
+    Type: AWS::CloudFront::Distribution
+    Properties:
+      DistributionConfig:
+        Aliases:
+        - api.dev.soldev.app
+        DefaultCacheBehavior:
+          AllowedMethods:
+          - GET
+          - HEAD
+          - OPTIONS
+          - PUT
+          - PATCH
+          - POST
+          - DELETE
+          CachePolicyId:
+            Ref: cloudfrontsoldevapicachepolicy60DE9363
+          CachedMethods:
+          - GET
+          - HEAD
+          - OPTIONS
+          Compress: true
+          OriginRequestPolicyId: 59781a5b-3903-41f3-afcb-af62929ccde1
+          TargetOriginId: soldevapicloudfrontapidistributionOrigin1861BBDE3
+          ViewerProtocolPolicy: https-only
+        Enabled: true
+        HttpVersion: http2
+        IPV6Enabled: true
+        Logging:
+          Bucket:
+            Fn::GetAtt:
+            - cloudfrontapidistributionLoggingBucket8DFC9A3B
+            - RegionalDomainName
+        Origins:
+        - CustomOriginConfig:
+            OriginProtocolPolicy: https-only
+            OriginSSLProtocols:
+            - TLSv1.2
+          DomainName: gateway.dev.soldev.app
+          Id: soldevapicloudfrontapidistributionOrigin1861BBDE3
+        ViewerCertificate:
+          AcmCertificateArn: arn:aws:acm:us-east-1:245308171953:certificate/caa7d027-5fb1-4db9-bba6-b0736b8314cd
+          MinimumProtocolVersion: TLSv1.2_2021
+          SslSupportMethod: sni-only
+    Metadata:
+      aws:cdk:path: soldev-api/cloudfront/api-distribution/Resource
+  cloudfrontapicdnarecordDFDF084A:
+    Type: AWS::Route53::RecordSet
+    Properties:
+      Name: api.dev.soldev.app.
+      Type: A
+      AliasTarget:
+        DNSName:
+          Fn::GetAtt:
+          - cloudfrontapidistributionAA65815D
+          - DomainName
+        HostedZoneId:
+          Fn::FindInMap:
+          - AWSCloudFrontPartitionHostedZoneIdMap
+          - Ref: AWS::Partition
+          - zoneId
+      HostedZoneId: Z01599181X9THEY4W66DB
+    Metadata:
+      aws:cdk:path: soldev-api/cloudfront/api-cdnarecord/Resource
+  cloudfrontapialiasrecord941291E8:
+    Type: AWS::Route53::RecordSet
+    Properties:
+      Name: api.dev.soldev.app.
+      Type: AAAA
+      AliasTarget:
+        DNSName:
+          Fn::GetAtt:
+          - cloudfrontapidistributionAA65815D
+          - DomainName
+        HostedZoneId:
+          Fn::FindInMap:
+          - AWSCloudFrontPartitionHostedZoneIdMap
+          - Ref: AWS::Partition
+          - zoneId
+      HostedZoneId: Z01599181X9THEY4W66DB
+    Metadata:
+      aws:cdk:path: soldev-api/cloudfront/api-alias-record/Resource
+  dbUsersB34A1333:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      KeySchema:
+      - AttributeName: PublicKey
+        KeyType: HASH
+      AttributeDefinitions:
+      - AttributeName: PublicKey
+        AttributeType: S
+      BillingMode: PAY_PER_REQUEST
+      PointInTimeRecoverySpecification:
+        PointInTimeRecoveryEnabled: true
+      TableName: Users
+    UpdateReplacePolicy: Delete
+    DeletionPolicy: Delete
+    Metadata:
+      aws:cdk:path: soldev-api/db/Users/Resource
+  dbPlaylists34E7CF8C:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      KeySchema:
+      - AttributeName: Vertical
+        KeyType: HASH
+      - AttributeName: ID
+        KeyType: RANGE
+      AttributeDefinitions:
+      - AttributeName: Vertical
+        AttributeType: S
+      - AttributeName: ID
+        AttributeType: S
+      - AttributeName: Provider
+        AttributeType: S
+      - AttributeName: Position
+        AttributeType: N
+      BillingMode: PAY_PER_REQUEST
+      GlobalSecondaryIndexes:
+      - IndexName: provider-gsi
+        KeySchema:
+        - AttributeName: Provider
+          KeyType: HASH
+        - AttributeName: Position
+          KeyType: RANGE
+        Projection:
+          ProjectionType: ALL
+      - IndexName: vertical-gsi
+        KeySchema:
+        - AttributeName: Vertical
+          KeyType: HASH
+        - AttributeName: Position
+          KeyType: RANGE
+        Projection:
+          ProjectionType: ALL
+      PointInTimeRecoverySpecification:
+        PointInTimeRecoveryEnabled: true
+      TableName: Playlists
+    UpdateReplacePolicy: Delete
+    DeletionPolicy: Delete
+    Metadata:
+      aws:cdk:path: soldev-api/db/Playlists/Resource
+  dbContent587A7F3B:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      KeySchema:
+      - AttributeName: PK
+        KeyType: HASH
+      - AttributeName: SK
+        KeyType: RANGE
+      AttributeDefinitions:
+      - AttributeName: PK
+        AttributeType: S
+      - AttributeName: SK
+        AttributeType: S
+      - AttributeName: ContentStatus
+        AttributeType: S
+      - AttributeName: SpecialTag
+        AttributeType: S
+      - AttributeName: PublishedAt
+        AttributeType: S
+      - AttributeName: Position
+        AttributeType: N
+      - AttributeName: Url
+        AttributeType: S
+      BillingMode: PAY_PER_REQUEST
+      GlobalSecondaryIndexes:
+      - IndexName: status-gsi
+        KeySchema:
+        - AttributeName: ContentStatus
+          KeyType: HASH
+        Projection:
+          ProjectionType: ALL
+      - IndexName: special-tag-gsi
+        KeySchema:
+        - AttributeName: SpecialTag
+          KeyType: HASH
+        - AttributeName: PublishedAt
+          KeyType: RANGE
+        Projection:
+          ProjectionType: ALL
+      - IndexName: video-gsi
+        KeySchema:
+        - AttributeName: PK
+          KeyType: HASH
+        - AttributeName: Position
+          KeyType: RANGE
+        Projection:
+          ProjectionType: ALL
+      - IndexName: url-gsi
+        KeySchema:
+        - AttributeName: Url
+          KeyType: HASH
+        Projection:
+          ProjectionType: ALL
+      LocalSecondaryIndexes:
+      - IndexName: content-status-lsi
+        KeySchema:
+        - AttributeName: PK
+          KeyType: HASH
+        - AttributeName: ContentStatus
+          KeyType: RANGE
+        Projection:
+          ProjectionType: ALL
+      PointInTimeRecoverySpecification:
+        PointInTimeRecoveryEnabled: true
+      TableName: Content
+      TimeToLiveSpecification:
+        AttributeName: Expdate
+        Enabled: true
+    UpdateReplacePolicy: Delete
+    DeletionPolicy: Delete
+    Metadata:
+      aws:cdk:path: soldev-api/db/Content/Resource
+  dbSocial6D567F09:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      KeySchema:
+      - AttributeName: PK
+        KeyType: HASH
+      - AttributeName: CreatedAt
+        KeyType: RANGE
+      AttributeDefinitions:
+      - AttributeName: PK
+        AttributeType: S
+      - AttributeName: CreatedAt
+        AttributeType: S
+      - AttributeName: ID
+        AttributeType: S
+      - AttributeName: Pinned
+        AttributeType: N
+      BillingMode: PAY_PER_REQUEST
+      GlobalSecondaryIndexes:
+      - IndexName: tweet-gsi
+        KeySchema:
+        - AttributeName: ID
+          KeyType: HASH
+        Projection:
+          ProjectionType: ALL
+      - IndexName: pinned-tweet-gsi
+        KeySchema:
+        - AttributeName: Pinned
+          KeyType: HASH
+        - AttributeName: CreatedAt
+          KeyType: RANGE
+        Projection:
+          ProjectionType: ALL
+      PointInTimeRecoverySpecification:
+        PointInTimeRecoveryEnabled: true
+      TableName: Social
+      TimeToLiveSpecification:
+        AttributeName: Expdate
+        Enabled: true
+    UpdateReplacePolicy: Delete
+    DeletionPolicy: Delete
+    Metadata:
+      aws:cdk:path: soldev-api/db/Social/Resource
+  dbBounties9D08BC17:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      KeySchema:
+      - AttributeName: PK
+        KeyType: HASH
+      - AttributeName: CreatedAt
+        KeyType: RANGE
+      AttributeDefinitions:
+      - AttributeName: PK
+        AttributeType: S
+      - AttributeName: CreatedAt
+        AttributeType: S
+      BillingMode: PAY_PER_REQUEST
+      PointInTimeRecoverySpecification:
+        PointInTimeRecoveryEnabled: true
+      TableName: Bounties
+    UpdateReplacePolicy: Delete
+    DeletionPolicy: Delete
+    Metadata:
+      aws:cdk:path: soldev-api/db/Bounties/Resource
+  fngetuserServiceRole96490F1E:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+        - Action: sts:AssumeRole
+          Effect: Allow
+          Principal:
+            Service: lambda.amazonaws.com
+        Version: '2012-10-17'
+      ManagedPolicyArns:
+      - Fn::Join:
+        - ''
+        - - 'arn:'
+          - Ref: AWS::Partition
+          - :iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+    Metadata:
+      aws:cdk:path: soldev-api/fn/get-user/ServiceRole/Resource
+  fngetuserServiceRoleDefaultPolicy4A0059B2:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyDocument:
+        Statement:
+        - Action:
+          - dynamodb:BatchGetItem
+          - dynamodb:GetRecords
+          - dynamodb:GetShardIterator
+          - dynamodb:Query
+          - dynamodb:GetItem
+          - dynamodb:Scan
+          - dynamodb:ConditionCheckItem
+          - dynamodb:BatchWriteItem
+          - dynamodb:PutItem
+          - dynamodb:UpdateItem
+          - dynamodb:DeleteItem
+          Effect: Allow
+          Resource:
+          - Fn::GetAtt:
+            - dbUsersB34A1333
+            - Arn
+          - Ref: AWS::NoValue
+        Version: '2012-10-17'
+      PolicyName: fngetuserServiceRoleDefaultPolicy4A0059B2
+      Roles:
+      - Ref: fngetuserServiceRole96490F1E
+    Metadata:
+      aws:cdk:path: soldev-api/fn/get-user/ServiceRole/DefaultPolicy/Resource
+  fngetuser5499B99F:
+    Type: AWS::Lambda::Function
+    Properties:
+      Code:
+        S3Bucket:
+          Ref: AssetParameters7cf8b82e9b6ffce296a8afdccdb82f1ec2fce1f982a640bc262d3120b8b67f49S3BucketDAF2175B
+        S3Key:
+          Fn::Join:
+          - ''
+          - - Fn::Select:
+              - 0
+              - Fn::Split:
+                - '||'
+                - Ref: AssetParameters7cf8b82e9b6ffce296a8afdccdb82f1ec2fce1f982a640bc262d3120b8b67f49S3VersionKey2AFFEA47
+            - Fn::Select:
+              - 1
+              - Fn::Split:
+                - '||'
+                - Ref: AssetParameters7cf8b82e9b6ffce296a8afdccdb82f1ec2fce1f982a640bc262d3120b8b67f49S3VersionKey2AFFEA47
+      Role:
+        Fn::GetAtt:
+        - fngetuserServiceRole96490F1E
+        - Arn
+      Architectures:
+      - arm64
+      Handler: bootstrap
+      MemorySize: 1024
+      Runtime: provided.al2
+    DependsOn:
+    - fngetuserServiceRoleDefaultPolicy4A0059B2
+    - fngetuserServiceRole96490F1E
+    Metadata:
+      aws:cdk:path: soldev-api/fn/get-user/Resource
+      aws:asset:path: ../../cdk.out/asset.7cf8b82e9b6ffce296a8afdccdb82f1ec2fce1f982a640bc262d3120b8b67f49
+      aws:asset:is-bundled: true
+      aws:asset:property: Code
+  fnputuserServiceRole297DB514:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+        - Action: sts:AssumeRole
+          Effect: Allow
+          Principal:
+            Service: lambda.amazonaws.com
+        Version: '2012-10-17'
+      ManagedPolicyArns:
+      - Fn::Join:
+        - ''
+        - - 'arn:'
+          - Ref: AWS::Partition
+          - :iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+    Metadata:
+      aws:cdk:path: soldev-api/fn/put-user/ServiceRole/Resource
+  fnputuserServiceRoleDefaultPolicy63E6BE7E:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyDocument:
+        Statement:
+        - Action:
+          - dynamodb:BatchWriteItem
+          - dynamodb:PutItem
+          - dynamodb:UpdateItem
+          - dynamodb:DeleteItem
+          Effect: Allow
+          Resource:
+          - Fn::GetAtt:
+            - dbUsersB34A1333
+            - Arn
+          - Ref: AWS::NoValue
+        Version: '2012-10-17'
+      PolicyName: fnputuserServiceRoleDefaultPolicy63E6BE7E
+      Roles:
+      - Ref: fnputuserServiceRole297DB514
+    Metadata:
+      aws:cdk:path: soldev-api/fn/put-user/ServiceRole/DefaultPolicy/Resource
+  fnputuser897956F9:
+    Type: AWS::Lambda::Function
+    Properties:
+      Code:
+        S3Bucket:
+          Ref: AssetParameters76aa34cff0f36ea1beebaf302a42a79a4a8ff59698942276701e5871a2726dbbS3Bucket06F2EC9C
+        S3Key:
+          Fn::Join:
+          - ''
+          - - Fn::Select:
+              - 0
+              - Fn::Split:
+                - '||'
+                - Ref: AssetParameters76aa34cff0f36ea1beebaf302a42a79a4a8ff59698942276701e5871a2726dbbS3VersionKey89DC97CA
+            - Fn::Select:
+              - 1
+              - Fn::Split:
+                - '||'
+                - Ref: AssetParameters76aa34cff0f36ea1beebaf302a42a79a4a8ff59698942276701e5871a2726dbbS3VersionKey89DC97CA
+      Role:
+        Fn::GetAtt:
+        - fnputuserServiceRole297DB514
+        - Arn
+      Architectures:
+      - arm64
+      Handler: bootstrap
+      MemorySize: 1024
+      Runtime: provided.al2
+    DependsOn:
+    - fnputuserServiceRoleDefaultPolicy63E6BE7E
+    - fnputuserServiceRole297DB514
+    Metadata:
+      aws:cdk:path: soldev-api/fn/put-user/Resource
+      aws:asset:path: ../../cdk.out/asset.76aa34cff0f36ea1beebaf302a42a79a4a8ff59698942276701e5871a2726dbb
+      aws:asset:is-bundled: true
+      aws:asset:property: Code
+  fngetplaylistsServiceRoleD0895708:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+        - Action: sts:AssumeRole
+          Effect: Allow
+          Principal:
+            Service: lambda.amazonaws.com
+        Version: '2012-10-17'
+      ManagedPolicyArns:
+      - Fn::Join:
+        - ''
+        - - 'arn:'
+          - Ref: AWS::Partition
+          - :iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+    Metadata:
+      aws:cdk:path: soldev-api/fn/get-playlists/ServiceRole/Resource
+  fngetplaylistsServiceRoleDefaultPolicy43BB8665:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyDocument:
+        Statement:
+        - Action:
+          - dynamodb:BatchGetItem
+          - dynamodb:GetRecords
+          - dynamodb:GetShardIterator
+          - dynamodb:Query
+          - dynamodb:GetItem
+          - dynamodb:Scan
+          - dynamodb:ConditionCheckItem
+          Effect: Allow
+          Resource:
+          - Fn::GetAtt:
+            - dbPlaylists34E7CF8C
+            - Arn
+          - Fn::Join:
+            - ''
+            - - Fn::GetAtt:
+                - dbPlaylists34E7CF8C
+                - Arn
+              - /index/*
+        Version: '2012-10-17'
+      PolicyName: fngetplaylistsServiceRoleDefaultPolicy43BB8665
+      Roles:
+      - Ref: fngetplaylistsServiceRoleD0895708
+    Metadata:
+      aws:cdk:path: soldev-api/fn/get-playlists/ServiceRole/DefaultPolicy/Resource
+  fngetplaylists203EB066:
+    Type: AWS::Lambda::Function
+    Properties:
+      Code:
+        S3Bucket:
+          Ref: AssetParameters12efff2396203c0ada64b480ba57edd8f586b028f32df4e346192a903de0e586S3Bucket9ECE3EA4
+        S3Key:
+          Fn::Join:
+          - ''
+          - - Fn::Select:
+              - 0
+              - Fn::Split:
+                - '||'
+                - Ref: AssetParameters12efff2396203c0ada64b480ba57edd8f586b028f32df4e346192a903de0e586S3VersionKey8809181C
+            - Fn::Select:
+              - 1
+              - Fn::Split:
+                - '||'
+                - Ref: AssetParameters12efff2396203c0ada64b480ba57edd8f586b028f32df4e346192a903de0e586S3VersionKey8809181C
+      Role:
+        Fn::GetAtt:
+        - fngetplaylistsServiceRoleD0895708
+        - Arn
+      Architectures:
+      - arm64
+      Handler: bootstrap
+      MemorySize: 1024
+      Runtime: provided.al2
+    DependsOn:
+    - fngetplaylistsServiceRoleDefaultPolicy43BB8665
+    - fngetplaylistsServiceRoleD0895708
+    Metadata:
+      aws:cdk:path: soldev-api/fn/get-playlists/Resource
+      aws:asset:path: ../../cdk.out/asset.12efff2396203c0ada64b480ba57edd8f586b028f32df4e346192a903de0e586
+      aws:asset:is-bundled: true
+      aws:asset:property: Code
+  fngetplaylistsbyidServiceRole78AEE449:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+        - Action: sts:AssumeRole
+          Effect: Allow
+          Principal:
+            Service: lambda.amazonaws.com
+        Version: '2012-10-17'
+      ManagedPolicyArns:
+      - Fn::Join:
+        - ''
+        - - 'arn:'
+          - Ref: AWS::Partition
+          - :iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+    Metadata:
+      aws:cdk:path: soldev-api/fn/get-playlists-by-id/ServiceRole/Resource
+  fngetplaylistsbyidServiceRoleDefaultPolicyD9BE1EA7:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyDocument:
+        Statement:
+        - Action:
+          - dynamodb:BatchGetItem
+          - dynamodb:GetRecords
+          - dynamodb:GetShardIterator
+          - dynamodb:Query
+          - dynamodb:GetItem
+          - dynamodb:Scan
+          - dynamodb:ConditionCheckItem
+          Effect: Allow
+          Resource:
+          - Fn::GetAtt:
+            - dbPlaylists34E7CF8C
+            - Arn
+          - Fn::Join:
+            - ''
+            - - Fn::GetAtt:
+                - dbPlaylists34E7CF8C
+                - Arn
+              - /index/*
+        Version: '2012-10-17'
+      PolicyName: fngetplaylistsbyidServiceRoleDefaultPolicyD9BE1EA7
+      Roles:
+      - Ref: fngetplaylistsbyidServiceRole78AEE449
+    Metadata:
+      aws:cdk:path: soldev-api/fn/get-playlists-by-id/ServiceRole/DefaultPolicy/Resource
+  fngetplaylistsbyid7C655B1B:
+    Type: AWS::Lambda::Function
+    Properties:
+      Code:
+        S3Bucket:
+          Ref: AssetParameters42b565ac6cce5ada3083face2627fc8dc2b351f9f870133ca73b8b03d6edef16S3Bucket6D165AC1
+        S3Key:
+          Fn::Join:
+          - ''
+          - - Fn::Select:
+              - 0
+              - Fn::Split:
+                - '||'
+                - Ref: AssetParameters42b565ac6cce5ada3083face2627fc8dc2b351f9f870133ca73b8b03d6edef16S3VersionKey324849B1
+            - Fn::Select:
+              - 1
+              - Fn::Split:
+                - '||'
+                - Ref: AssetParameters42b565ac6cce5ada3083face2627fc8dc2b351f9f870133ca73b8b03d6edef16S3VersionKey324849B1
+      Role:
+        Fn::GetAtt:
+        - fngetplaylistsbyidServiceRole78AEE449
+        - Arn
+      Architectures:
+      - arm64
+      Handler: bootstrap
+      MemorySize: 1024
+      Runtime: provided.al2
+    DependsOn:
+    - fngetplaylistsbyidServiceRoleDefaultPolicyD9BE1EA7
+    - fngetplaylistsbyidServiceRole78AEE449
+    Metadata:
+      aws:cdk:path: soldev-api/fn/get-playlists-by-id/Resource
+      aws:asset:path: ../../cdk.out/asset.42b565ac6cce5ada3083face2627fc8dc2b351f9f870133ca73b8b03d6edef16
+      aws:asset:is-bundled: true
+      aws:asset:property: Code
+  fnputplaylistsServiceRole6D7458A4:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+        - Action: sts:AssumeRole
+          Effect: Allow
+          Principal:
+            Service: lambda.amazonaws.com
+        Version: '2012-10-17'
+      ManagedPolicyArns:
+      - Fn::Join:
+        - ''
+        - - 'arn:'
+          - Ref: AWS::Partition
+          - :iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+    Metadata:
+      aws:cdk:path: soldev-api/fn/put-playlists/ServiceRole/Resource
+  fnputplaylistsServiceRoleDefaultPolicyF75A1AC3:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyDocument:
+        Statement:
+        - Action:
+          - dynamodb:BatchWriteItem
+          - dynamodb:PutItem
+          - dynamodb:UpdateItem
+          - dynamodb:DeleteItem
+          Effect: Allow
+          Resource:
+          - Fn::GetAtt:
+            - dbPlaylists34E7CF8C
+            - Arn
+          - Fn::Join:
+            - ''
+            - - Fn::GetAtt:
+                - dbPlaylists34E7CF8C
+                - Arn
+              - /index/*
+        Version: '2012-10-17'
+      PolicyName: fnputplaylistsServiceRoleDefaultPolicyF75A1AC3
+      Roles:
+      - Ref: fnputplaylistsServiceRole6D7458A4
+    Metadata:
+      aws:cdk:path: soldev-api/fn/put-playlists/ServiceRole/DefaultPolicy/Resource
+  fnputplaylistsCE3CA7E4:
+    Type: AWS::Lambda::Function
+    Properties:
+      Code:
+        S3Bucket:
+          Ref: AssetParameters3e4a286656ae3be0dffd0e9f0389acaa22b480df2d5cabb71067f6b343823be3S3BucketE7472246
+        S3Key:
+          Fn::Join:
+          - ''
+          - - Fn::Select:
+              - 0
+              - Fn::Split:
+                - '||'
+                - Ref: AssetParameters3e4a286656ae3be0dffd0e9f0389acaa22b480df2d5cabb71067f6b343823be3S3VersionKey6813FBAA
+            - Fn::Select:
+              - 1
+              - Fn::Split:
+                - '||'
+                - Ref: AssetParameters3e4a286656ae3be0dffd0e9f0389acaa22b480df2d5cabb71067f6b343823be3S3VersionKey6813FBAA
+      Role:
+        Fn::GetAtt:
+        - fnputplaylistsServiceRole6D7458A4
+        - Arn
+      Architectures:
+      - arm64
+      Handler: bootstrap
+      MemorySize: 1024
+      Runtime: provided.al2
+    DependsOn:
+    - fnputplaylistsServiceRoleDefaultPolicyF75A1AC3
+    - fnputplaylistsServiceRole6D7458A4
+    Metadata:
+      aws:cdk:path: soldev-api/fn/put-playlists/Resource
+      aws:asset:path: ../../cdk.out/asset.3e4a286656ae3be0dffd0e9f0389acaa22b480df2d5cabb71067f6b343823be3
+      aws:asset:is-bundled: true
+      aws:asset:property: Code
+  fnputcontentServiceRole21F758FA:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+        - Action: sts:AssumeRole
+          Effect: Allow
+          Principal:
+            Service: lambda.amazonaws.com
+        Version: '2012-10-17'
+      ManagedPolicyArns:
+      - Fn::Join:
+        - ''
+        - - 'arn:'
+          - Ref: AWS::Partition
+          - :iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+    Metadata:
+      aws:cdk:path: soldev-api/fn/put-content/ServiceRole/Resource
+  fnputcontentServiceRoleDefaultPolicy7E431BB7:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyDocument:
+        Statement:
+        - Action:
+          - dynamodb:BatchWriteItem
+          - dynamodb:PutItem
+          - dynamodb:UpdateItem
+          - dynamodb:DeleteItem
+          Effect: Allow
+          Resource:
+          - Fn::GetAtt:
+            - dbContent587A7F3B
+            - Arn
+          - Fn::Join:
+            - ''
+            - - Fn::GetAtt:
+                - dbContent587A7F3B
+                - Arn
+              - /index/*
+        Version: '2012-10-17'
+      PolicyName: fnputcontentServiceRoleDefaultPolicy7E431BB7
+      Roles:
+      - Ref: fnputcontentServiceRole21F758FA
+    Metadata:
+      aws:cdk:path: soldev-api/fn/put-content/ServiceRole/DefaultPolicy/Resource
+  fnputcontent49D8EA2D:
+    Type: AWS::Lambda::Function
+    Properties:
+      Code:
+        S3Bucket:
+          Ref: AssetParameters691ab089facd01968ad3bf6f38501b82019e441b429df23d45e16d2f2bfbf747S3Bucket8FEE0828
+        S3Key:
+          Fn::Join:
+          - ''
+          - - Fn::Select:
+              - 0
+              - Fn::Split:
+                - '||'
+                - Ref: AssetParameters691ab089facd01968ad3bf6f38501b82019e441b429df23d45e16d2f2bfbf747S3VersionKey82459397
+            - Fn::Select:
+              - 1
+              - Fn::Split:
+                - '||'
+                - Ref: AssetParameters691ab089facd01968ad3bf6f38501b82019e441b429df23d45e16d2f2bfbf747S3VersionKey82459397
+      Role:
+        Fn::GetAtt:
+        - fnputcontentServiceRole21F758FA
+        - Arn
+      Architectures:
+      - arm64
+      Environment:
+        Variables:
+          ALGOLIA_APP_ID: V4D5J873RY
+          ALGOLIA_API_KEY: e723db2ac97033e29fa9f74a7470cd75
+          DEV_ALGOLIA_INDEX: dev_soldev
+          PROD_ALGOLIA_INDEX: prod_soldev
+          AWS_ENV: development
+      Handler: bootstrap
+      MemorySize: 1024
+      Runtime: provided.al2
+      Timeout: 30
+    DependsOn:
+    - fnputcontentServiceRoleDefaultPolicy7E431BB7
+    - fnputcontentServiceRole21F758FA
+    Metadata:
+      aws:cdk:path: soldev-api/fn/put-content/Resource
+      aws:asset:path: ../../cdk.out/asset.691ab089facd01968ad3bf6f38501b82019e441b429df23d45e16d2f2bfbf747
+      aws:asset:is-bundled: true
+      aws:asset:property: Code
+  fnpostcontentServiceRole218DF3C2:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+        - Action: sts:AssumeRole
+          Effect: Allow
+          Principal:
+            Service: lambda.amazonaws.com
+        Version: '2012-10-17'
+      ManagedPolicyArns:
+      - Fn::Join:
+        - ''
+        - - 'arn:'
+          - Ref: AWS::Partition
+          - :iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+    Metadata:
+      aws:cdk:path: soldev-api/fn/post-content/ServiceRole/Resource
+  fnpostcontentServiceRoleDefaultPolicyED2374E2:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyDocument:
+        Statement:
+        - Action:
+          - dynamodb:BatchWriteItem
+          - dynamodb:PutItem
+          - dynamodb:UpdateItem
+          - dynamodb:DeleteItem
+          Effect: Allow
+          Resource:
+          - Fn::GetAtt:
+            - dbContent587A7F3B
+            - Arn
+          - Fn::Join:
+            - ''
+            - - Fn::GetAtt:
+                - dbContent587A7F3B
+                - Arn
+              - /index/*
+        Version: '2012-10-17'
+      PolicyName: fnpostcontentServiceRoleDefaultPolicyED2374E2
+      Roles:
+      - Ref: fnpostcontentServiceRole218DF3C2
+    Metadata:
+      aws:cdk:path: soldev-api/fn/post-content/ServiceRole/DefaultPolicy/Resource
+  fnpostcontent1C355459:
+    Type: AWS::Lambda::Function
+    Properties:
+      Code:
+        S3Bucket:
+          Ref: AssetParameters37b86bbfb7af4d956ed4253c2b00cb1584e90a0c3f629372dcc2a94d031064f2S3Bucket4CAB6BA2
+        S3Key:
+          Fn::Join:
+          - ''
+          - - Fn::Select:
+              - 0
+              - Fn::Split:
+                - '||'
+                - Ref: AssetParameters37b86bbfb7af4d956ed4253c2b00cb1584e90a0c3f629372dcc2a94d031064f2S3VersionKey99D7DBE2
+            - Fn::Select:
+              - 1
+              - Fn::Split:
+                - '||'
+                - Ref: AssetParameters37b86bbfb7af4d956ed4253c2b00cb1584e90a0c3f629372dcc2a94d031064f2S3VersionKey99D7DBE2
+      Role:
+        Fn::GetAtt:
+        - fnpostcontentServiceRole218DF3C2
+        - Arn
+      Architectures:
+      - arm64
+      Environment:
+        Variables:
+          ALGOLIA_APP_ID: V4D5J873RY
+          ALGOLIA_API_KEY: e723db2ac97033e29fa9f74a7470cd75
+          DEV_ALGOLIA_INDEX: dev_soldev
+          PROD_ALGOLIA_INDEX: prod_soldev
+          AWS_ENV: development
+      Handler: bootstrap
+      MemorySize: 1024
+      Runtime: provided.al2
+      Timeout: 30
+    DependsOn:
+    - fnpostcontentServiceRoleDefaultPolicyED2374E2
+    - fnpostcontentServiceRole218DF3C2
+    Metadata:
+      aws:cdk:path: soldev-api/fn/post-content/Resource
+      aws:asset:path: ../../cdk.out/asset.37b86bbfb7af4d956ed4253c2b00cb1584e90a0c3f629372dcc2a94d031064f2
+      aws:asset:is-bundled: true
+      aws:asset:property: Code
+  fngetcontentServiceRoleD8B9E357:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+        - Action: sts:AssumeRole
+          Effect: Allow
+          Principal:
+            Service: lambda.amazonaws.com
+        Version: '2012-10-17'
+      ManagedPolicyArns:
+      - Fn::Join:
+        - ''
+        - - 'arn:'
+          - Ref: AWS::Partition
+          - :iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+    Metadata:
+      aws:cdk:path: soldev-api/fn/get-content/ServiceRole/Resource
+  fngetcontentServiceRoleDefaultPolicyB4DAC67B:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyDocument:
+        Statement:
+        - Action:
+          - dynamodb:BatchGetItem
+          - dynamodb:GetRecords
+          - dynamodb:GetShardIterator
+          - dynamodb:Query
+          - dynamodb:GetItem
+          - dynamodb:Scan
+          - dynamodb:ConditionCheckItem
+          Effect: Allow
+          Resource:
+          - Fn::GetAtt:
+            - dbContent587A7F3B
+            - Arn
+          - Fn::Join:
+            - ''
+            - - Fn::GetAtt:
+                - dbContent587A7F3B
+                - Arn
+              - /index/*
+        Version: '2012-10-17'
+      PolicyName: fngetcontentServiceRoleDefaultPolicyB4DAC67B
+      Roles:
+      - Ref: fngetcontentServiceRoleD8B9E357
+    Metadata:
+      aws:cdk:path: soldev-api/fn/get-content/ServiceRole/DefaultPolicy/Resource
+  fngetcontent8AE80068:
+    Type: AWS::Lambda::Function
+    Properties:
+      Code:
+        S3Bucket:
+          Ref: AssetParametersc9902c006a0c661b705489b21072ed04897ccc939bcbbccbd7793c5e7717f071S3Bucket79724106
+        S3Key:
+          Fn::Join:
+          - ''
+          - - Fn::Select:
+              - 0
+              - Fn::Split:
+                - '||'
+                - Ref: AssetParametersc9902c006a0c661b705489b21072ed04897ccc939bcbbccbd7793c5e7717f071S3VersionKeyBFCFDF29
+            - Fn::Select:
+              - 1
+              - Fn::Split:
+                - '||'
+                - Ref: AssetParametersc9902c006a0c661b705489b21072ed04897ccc939bcbbccbd7793c5e7717f071S3VersionKeyBFCFDF29
+      Role:
+        Fn::GetAtt:
+        - fngetcontentServiceRoleD8B9E357
+        - Arn
+      Architectures:
+      - arm64
+      Handler: bootstrap
+      MemorySize: 1024
+      Runtime: provided.al2
+    DependsOn:
+    - fngetcontentServiceRoleDefaultPolicyB4DAC67B
+    - fngetcontentServiceRoleD8B9E357
+    Metadata:
+      aws:cdk:path: soldev-api/fn/get-content/Resource
+      aws:asset:path: ../../cdk.out/asset.c9902c006a0c661b705489b21072ed04897ccc939bcbbccbd7793c5e7717f071
+      aws:asset:is-bundled: true
+      aws:asset:property: Code
+  fngetcontentbyidServiceRole75435732:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+        - Action: sts:AssumeRole
+          Effect: Allow
+          Principal:
+            Service: lambda.amazonaws.com
+        Version: '2012-10-17'
+      ManagedPolicyArns:
+      - Fn::Join:
+        - ''
+        - - 'arn:'
+          - Ref: AWS::Partition
+          - :iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+    Metadata:
+      aws:cdk:path: soldev-api/fn/get-content-by-id/ServiceRole/Resource
+  fngetcontentbyidServiceRoleDefaultPolicy1028889C:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyDocument:
+        Statement:
+        - Action:
+          - dynamodb:BatchGetItem
+          - dynamodb:GetRecords
+          - dynamodb:GetShardIterator
+          - dynamodb:Query
+          - dynamodb:GetItem
+          - dynamodb:Scan
+          - dynamodb:ConditionCheckItem
+          Effect: Allow
+          Resource:
+          - Fn::GetAtt:
+            - dbContent587A7F3B
+            - Arn
+          - Fn::Join:
+            - ''
+            - - Fn::GetAtt:
+                - dbContent587A7F3B
+                - Arn
+              - /index/*
+        Version: '2012-10-17'
+      PolicyName: fngetcontentbyidServiceRoleDefaultPolicy1028889C
+      Roles:
+      - Ref: fngetcontentbyidServiceRole75435732
+    Metadata:
+      aws:cdk:path: soldev-api/fn/get-content-by-id/ServiceRole/DefaultPolicy/Resource
+  fngetcontentbyid3AECADC3:
+    Type: AWS::Lambda::Function
+    Properties:
+      Code:
+        S3Bucket:
+          Ref: AssetParameters3d4fcc29f246c29b2450631015e1d603e3c7826849f7f5494c8ad49776c8fec2S3BucketCE3A8F8A
+        S3Key:
+          Fn::Join:
+          - ''
+          - - Fn::Select:
+              - 0
+              - Fn::Split:
+                - '||'
+                - Ref: AssetParameters3d4fcc29f246c29b2450631015e1d603e3c7826849f7f5494c8ad49776c8fec2S3VersionKey3D1440C8
+            - Fn::Select:
+              - 1
+              - Fn::Split:
+                - '||'
+                - Ref: AssetParameters3d4fcc29f246c29b2450631015e1d603e3c7826849f7f5494c8ad49776c8fec2S3VersionKey3D1440C8
+      Role:
+        Fn::GetAtt:
+        - fngetcontentbyidServiceRole75435732
+        - Arn
+      Architectures:
+      - arm64
+      Handler: bootstrap
+      MemorySize: 1024
+      Runtime: provided.al2
+    DependsOn:
+    - fngetcontentbyidServiceRoleDefaultPolicy1028889C
+    - fngetcontentbyidServiceRole75435732
+    Metadata:
+      aws:cdk:path: soldev-api/fn/get-content-by-id/Resource
+      aws:asset:path: ../../cdk.out/asset.3d4fcc29f246c29b2450631015e1d603e3c7826849f7f5494c8ad49776c8fec2
+      aws:asset:is-bundled: true
+      aws:asset:property: Code
+  fngetcontentbystatusServiceRoleCB7BD6C8:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+        - Action: sts:AssumeRole
+          Effect: Allow
+          Principal:
+            Service: lambda.amazonaws.com
+        Version: '2012-10-17'
+      ManagedPolicyArns:
+      - Fn::Join:
+        - ''
+        - - 'arn:'
+          - Ref: AWS::Partition
+          - :iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+    Metadata:
+      aws:cdk:path: soldev-api/fn/get-content-by-status/ServiceRole/Resource
+  fngetcontentbystatusServiceRoleDefaultPolicyA4A935E4:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyDocument:
+        Statement:
+        - Action:
+          - dynamodb:BatchGetItem
+          - dynamodb:GetRecords
+          - dynamodb:GetShardIterator
+          - dynamodb:Query
+          - dynamodb:GetItem
+          - dynamodb:Scan
+          - dynamodb:ConditionCheckItem
+          Effect: Allow
+          Resource:
+          - Fn::GetAtt:
+            - dbContent587A7F3B
+            - Arn
+          - Fn::Join:
+            - ''
+            - - Fn::GetAtt:
+                - dbContent587A7F3B
+                - Arn
+              - /index/*
+        Version: '2012-10-17'
+      PolicyName: fngetcontentbystatusServiceRoleDefaultPolicyA4A935E4
+      Roles:
+      - Ref: fngetcontentbystatusServiceRoleCB7BD6C8
+    Metadata:
+      aws:cdk:path: soldev-api/fn/get-content-by-status/ServiceRole/DefaultPolicy/Resource
+  fngetcontentbystatusCC74B44C:
+    Type: AWS::Lambda::Function
+    Properties:
+      Code:
+        S3Bucket:
+          Ref: AssetParameters647ab89b71576e65bdb40a70acfb4e56f70c2e26140e2c9f1775a5ef597e7abaS3BucketD17F26AB
+        S3Key:
+          Fn::Join:
+          - ''
+          - - Fn::Select:
+              - 0
+              - Fn::Split:
+                - '||'
+                - Ref: AssetParameters647ab89b71576e65bdb40a70acfb4e56f70c2e26140e2c9f1775a5ef597e7abaS3VersionKeyD2F96BAE
+            - Fn::Select:
+              - 1
+              - Fn::Split:
+                - '||'
+                - Ref: AssetParameters647ab89b71576e65bdb40a70acfb4e56f70c2e26140e2c9f1775a5ef597e7abaS3VersionKeyD2F96BAE
+      Role:
+        Fn::GetAtt:
+        - fngetcontentbystatusServiceRoleCB7BD6C8
+        - Arn
+      Architectures:
+      - arm64
+      Handler: bootstrap
+      MemorySize: 1024
+      Runtime: provided.al2
+    DependsOn:
+    - fngetcontentbystatusServiceRoleDefaultPolicyA4A935E4
+    - fngetcontentbystatusServiceRoleCB7BD6C8
+    Metadata:
+      aws:cdk:path: soldev-api/fn/get-content-by-status/Resource
+      aws:asset:path: ../../cdk.out/asset.647ab89b71576e65bdb40a70acfb4e56f70c2e26140e2c9f1775a5ef597e7aba
+      aws:asset:is-bundled: true
+      aws:asset:property: Code
+  fngetcontentusingspecialtagServiceRole5C2EC320:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+        - Action: sts:AssumeRole
+          Effect: Allow
+          Principal:
+            Service: lambda.amazonaws.com
+        Version: '2012-10-17'
+      ManagedPolicyArns:
+      - Fn::Join:
+        - ''
+        - - 'arn:'
+          - Ref: AWS::Partition
+          - :iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+    Metadata:
+      aws:cdk:path: soldev-api/fn/get-content-using-specialtag/ServiceRole/Resource
+  fngetcontentusingspecialtagServiceRoleDefaultPolicyBF97DCE1:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyDocument:
+        Statement:
+        - Action:
+          - dynamodb:BatchGetItem
+          - dynamodb:GetRecords
+          - dynamodb:GetShardIterator
+          - dynamodb:Query
+          - dynamodb:GetItem
+          - dynamodb:Scan
+          - dynamodb:ConditionCheckItem
+          Effect: Allow
+          Resource:
+          - Fn::GetAtt:
+            - dbContent587A7F3B
+            - Arn
+          - Fn::Join:
+            - ''
+            - - Fn::GetAtt:
+                - dbContent587A7F3B
+                - Arn
+              - /index/*
+        Version: '2012-10-17'
+      PolicyName: fngetcontentusingspecialtagServiceRoleDefaultPolicyBF97DCE1
+      Roles:
+      - Ref: fngetcontentusingspecialtagServiceRole5C2EC320
+    Metadata:
+      aws:cdk:path: soldev-api/fn/get-content-using-specialtag/ServiceRole/DefaultPolicy/Resource
+  fngetcontentusingspecialtag6A073DBC:
+    Type: AWS::Lambda::Function
+    Properties:
+      Code:
+        S3Bucket:
+          Ref: AssetParameters060e64540c69407d1cc0b4e49efcfac2a5f31c22617e3e66f80f96955ecbf2dfS3BucketF89D5BFE
+        S3Key:
+          Fn::Join:
+          - ''
+          - - Fn::Select:
+              - 0
+              - Fn::Split:
+                - '||'
+                - Ref: AssetParameters060e64540c69407d1cc0b4e49efcfac2a5f31c22617e3e66f80f96955ecbf2dfS3VersionKey8F1EA3AE
+            - Fn::Select:
+              - 1
+              - Fn::Split:
+                - '||'
+                - Ref: AssetParameters060e64540c69407d1cc0b4e49efcfac2a5f31c22617e3e66f80f96955ecbf2dfS3VersionKey8F1EA3AE
+      Role:
+        Fn::GetAtt:
+        - fngetcontentusingspecialtagServiceRole5C2EC320
+        - Arn
+      Architectures:
+      - arm64
+      Handler: bootstrap
+      MemorySize: 1024
+      Runtime: provided.al2
+    DependsOn:
+    - fngetcontentusingspecialtagServiceRoleDefaultPolicyBF97DCE1
+    - fngetcontentusingspecialtagServiceRole5C2EC320
+    Metadata:
+      aws:cdk:path: soldev-api/fn/get-content-using-specialtag/Resource
+      aws:asset:path: ../../cdk.out/asset.060e64540c69407d1cc0b4e49efcfac2a5f31c22617e3e66f80f96955ecbf2df
+      aws:asset:is-bundled: true
+      aws:asset:property: Code
+  fngetcontentusinglistServiceRole9EB1712B:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+        - Action: sts:AssumeRole
+          Effect: Allow
+          Principal:
+            Service: lambda.amazonaws.com
+        Version: '2012-10-17'
+      ManagedPolicyArns:
+      - Fn::Join:
+        - ''
+        - - 'arn:'
+          - Ref: AWS::Partition
+          - :iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+    Metadata:
+      aws:cdk:path: soldev-api/fn/get-content-using-list/ServiceRole/Resource
+  fngetcontentusinglistServiceRoleDefaultPolicy9EB69496:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyDocument:
+        Statement:
+        - Action:
+          - dynamodb:BatchGetItem
+          - dynamodb:GetRecords
+          - dynamodb:GetShardIterator
+          - dynamodb:Query
+          - dynamodb:GetItem
+          - dynamodb:Scan
+          - dynamodb:ConditionCheckItem
+          Effect: Allow
+          Resource:
+          - Fn::GetAtt:
+            - dbContent587A7F3B
+            - Arn
+          - Fn::Join:
+            - ''
+            - - Fn::GetAtt:
+                - dbContent587A7F3B
+                - Arn
+              - /index/*
+        Version: '2012-10-17'
+      PolicyName: fngetcontentusinglistServiceRoleDefaultPolicy9EB69496
+      Roles:
+      - Ref: fngetcontentusinglistServiceRole9EB1712B
+    Metadata:
+      aws:cdk:path: soldev-api/fn/get-content-using-list/ServiceRole/DefaultPolicy/Resource
+  fngetcontentusinglist283F95F4:
+    Type: AWS::Lambda::Function
+    Properties:
+      Code:
+        S3Bucket:
+          Ref: AssetParameters8438b2a4327ac99d6e73e229a6198de51b191c80af6eaccd8e6a43c8434954c5S3Bucket962025C3
+        S3Key:
+          Fn::Join:
+          - ''
+          - - Fn::Select:
+              - 0
+              - Fn::Split:
+                - '||'
+                - Ref: AssetParameters8438b2a4327ac99d6e73e229a6198de51b191c80af6eaccd8e6a43c8434954c5S3VersionKey03BB8FC8
+            - Fn::Select:
+              - 1
+              - Fn::Split:
+                - '||'
+                - Ref: AssetParameters8438b2a4327ac99d6e73e229a6198de51b191c80af6eaccd8e6a43c8434954c5S3VersionKey03BB8FC8
+      Role:
+        Fn::GetAtt:
+        - fngetcontentusinglistServiceRole9EB1712B
+        - Arn
+      Architectures:
+      - arm64
+      Handler: bootstrap
+      MemorySize: 1024
+      Runtime: provided.al2
+    DependsOn:
+    - fngetcontentusinglistServiceRoleDefaultPolicy9EB69496
+    - fngetcontentusinglistServiceRole9EB1712B
+    Metadata:
+      aws:cdk:path: soldev-api/fn/get-content-using-list/Resource
+      aws:asset:path: ../../cdk.out/asset.8438b2a4327ac99d6e73e229a6198de51b191c80af6eaccd8e6a43c8434954c5
+      aws:asset:is-bundled: true
+      aws:asset:property: Code
+  fngetcheckcontentbyurlServiceRole963812B5:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+        - Action: sts:AssumeRole
+          Effect: Allow
+          Principal:
+            Service: lambda.amazonaws.com
+        Version: '2012-10-17'
+      ManagedPolicyArns:
+      - Fn::Join:
+        - ''
+        - - 'arn:'
+          - Ref: AWS::Partition
+          - :iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+    Metadata:
+      aws:cdk:path: soldev-api/fn/get-check-content-by-url/ServiceRole/Resource
+  fngetcheckcontentbyurlServiceRoleDefaultPolicy1DFBDB3A:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyDocument:
+        Statement:
+        - Action:
+          - dynamodb:BatchGetItem
+          - dynamodb:GetRecords
+          - dynamodb:GetShardIterator
+          - dynamodb:Query
+          - dynamodb:GetItem
+          - dynamodb:Scan
+          - dynamodb:ConditionCheckItem
+          Effect: Allow
+          Resource:
+          - Fn::GetAtt:
+            - dbContent587A7F3B
+            - Arn
+          - Fn::Join:
+            - ''
+            - - Fn::GetAtt:
+                - dbContent587A7F3B
+                - Arn
+              - /index/*
+        Version: '2012-10-17'
+      PolicyName: fngetcheckcontentbyurlServiceRoleDefaultPolicy1DFBDB3A
+      Roles:
+      - Ref: fngetcheckcontentbyurlServiceRole963812B5
+    Metadata:
+      aws:cdk:path: soldev-api/fn/get-check-content-by-url/ServiceRole/DefaultPolicy/Resource
+  fngetcheckcontentbyurl6598506B:
+    Type: AWS::Lambda::Function
+    Properties:
+      Code:
+        S3Bucket:
+          Ref: AssetParameters3c7c90f2d8a416775911106440ce07a5d5a3ea054a32ed395911d27a6dda6600S3BucketAFDCBA19
+        S3Key:
+          Fn::Join:
+          - ''
+          - - Fn::Select:
+              - 0
+              - Fn::Split:
+                - '||'
+                - Ref: AssetParameters3c7c90f2d8a416775911106440ce07a5d5a3ea054a32ed395911d27a6dda6600S3VersionKeyFCD566D1
+            - Fn::Select:
+              - 1
+              - Fn::Split:
+                - '||'
+                - Ref: AssetParameters3c7c90f2d8a416775911106440ce07a5d5a3ea054a32ed395911d27a6dda6600S3VersionKeyFCD566D1
+      Role:
+        Fn::GetAtt:
+        - fngetcheckcontentbyurlServiceRole963812B5
+        - Arn
+      Architectures:
+      - arm64
+      Handler: bootstrap
+      MemorySize: 1024
+      Runtime: provided.al2
+    DependsOn:
+    - fngetcheckcontentbyurlServiceRoleDefaultPolicy1DFBDB3A
+    - fngetcheckcontentbyurlServiceRole963812B5
+    Metadata:
+      aws:cdk:path: soldev-api/fn/get-check-content-by-url/Resource
+      aws:asset:path: ../../cdk.out/asset.3c7c90f2d8a416775911106440ce07a5d5a3ea054a32ed395911d27a6dda6600
+      aws:asset:is-bundled: true
+      aws:asset:property: Code
+  fngetcontenttypesServiceRole0BA2A28C:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+        - Action: sts:AssumeRole
+          Effect: Allow
+          Principal:
+            Service: lambda.amazonaws.com
+        Version: '2012-10-17'
+      ManagedPolicyArns:
+      - Fn::Join:
+        - ''
+        - - 'arn:'
+          - Ref: AWS::Partition
+          - :iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+    Metadata:
+      aws:cdk:path: soldev-api/fn/get-content-types/ServiceRole/Resource
+  fngetcontenttypes48D9D3D9:
+    Type: AWS::Lambda::Function
+    Properties:
+      Code:
+        S3Bucket:
+          Ref: AssetParameters76fb359b9e1ce64113e589213dbecabb725659571f8ee4b6cc9e0fc12dbb70d2S3Bucket0E256283
+        S3Key:
+          Fn::Join:
+          - ''
+          - - Fn::Select:
+              - 0
+              - Fn::Split:
+                - '||'
+                - Ref: AssetParameters76fb359b9e1ce64113e589213dbecabb725659571f8ee4b6cc9e0fc12dbb70d2S3VersionKey32B5744B
+            - Fn::Select:
+              - 1
+              - Fn::Split:
+                - '||'
+                - Ref: AssetParameters76fb359b9e1ce64113e589213dbecabb725659571f8ee4b6cc9e0fc12dbb70d2S3VersionKey32B5744B
+      Role:
+        Fn::GetAtt:
+        - fngetcontenttypesServiceRole0BA2A28C
+        - Arn
+      Architectures:
+      - arm64
+      Handler: bootstrap
+      MemorySize: 1024
+      Runtime: provided.al2
+    DependsOn:
+    - fngetcontenttypesServiceRole0BA2A28C
+    Metadata:
+      aws:cdk:path: soldev-api/fn/get-content-types/Resource
+      aws:asset:path: ../../cdk.out/asset.76fb359b9e1ce64113e589213dbecabb725659571f8ee4b6cc9e0fc12dbb70d2
+      aws:asset:is-bundled: true
+      aws:asset:property: Code
+  fngettweetsServiceRoleAC0D0D19:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+        - Action: sts:AssumeRole
+          Effect: Allow
+          Principal:
+            Service: lambda.amazonaws.com
+        Version: '2012-10-17'
+      ManagedPolicyArns:
+      - Fn::Join:
+        - ''
+        - - 'arn:'
+          - Ref: AWS::Partition
+          - :iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+    Metadata:
+      aws:cdk:path: soldev-api/fn/get-tweets/ServiceRole/Resource
+  fngettweetsServiceRoleDefaultPolicy1CD04231:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyDocument:
+        Statement:
+        - Action:
+          - dynamodb:BatchGetItem
+          - dynamodb:GetRecords
+          - dynamodb:GetShardIterator
+          - dynamodb:Query
+          - dynamodb:GetItem
+          - dynamodb:Scan
+          - dynamodb:ConditionCheckItem
+          Effect: Allow
+          Resource:
+          - Fn::GetAtt:
+            - dbSocial6D567F09
+            - Arn
+          - Fn::Join:
+            - ''
+            - - Fn::GetAtt:
+                - dbSocial6D567F09
+                - Arn
+              - /index/*
+        Version: '2012-10-17'
+      PolicyName: fngettweetsServiceRoleDefaultPolicy1CD04231
+      Roles:
+      - Ref: fngettweetsServiceRoleAC0D0D19
+    Metadata:
+      aws:cdk:path: soldev-api/fn/get-tweets/ServiceRole/DefaultPolicy/Resource
+  fngettweets2E65D8DC:
+    Type: AWS::Lambda::Function
+    Properties:
+      Code:
+        S3Bucket:
+          Ref: AssetParametersb43641d94a93dd520a90dab29f0dbb7b3a2707a0489798b29ec9bd928bf5f44eS3Bucket010D1C27
+        S3Key:
+          Fn::Join:
+          - ''
+          - - Fn::Select:
+              - 0
+              - Fn::Split:
+                - '||'
+                - Ref: AssetParametersb43641d94a93dd520a90dab29f0dbb7b3a2707a0489798b29ec9bd928bf5f44eS3VersionKey0B6E8932
+            - Fn::Select:
+              - 1
+              - Fn::Split:
+                - '||'
+                - Ref: AssetParametersb43641d94a93dd520a90dab29f0dbb7b3a2707a0489798b29ec9bd928bf5f44eS3VersionKey0B6E8932
+      Role:
+        Fn::GetAtt:
+        - fngettweetsServiceRoleAC0D0D19
+        - Arn
+      Architectures:
+      - arm64
+      Handler: bootstrap
+      MemorySize: 1024
+      Runtime: provided.al2
+    DependsOn:
+    - fngettweetsServiceRoleDefaultPolicy1CD04231
+    - fngettweetsServiceRoleAC0D0D19
+    Metadata:
+      aws:cdk:path: soldev-api/fn/get-tweets/Resource
+      aws:asset:path: ../../cdk.out/asset.b43641d94a93dd520a90dab29f0dbb7b3a2707a0489798b29ec9bd928bf5f44e
+      aws:asset:is-bundled: true
+      aws:asset:property: Code
+  fngetpinnedtweetsServiceRole8DCEC9C4:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+        - Action: sts:AssumeRole
+          Effect: Allow
+          Principal:
+            Service: lambda.amazonaws.com
+        Version: '2012-10-17'
+      ManagedPolicyArns:
+      - Fn::Join:
+        - ''
+        - - 'arn:'
+          - Ref: AWS::Partition
+          - :iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+    Metadata:
+      aws:cdk:path: soldev-api/fn/get-pinned-tweets/ServiceRole/Resource
+  fngetpinnedtweetsServiceRoleDefaultPolicy97648BEE:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyDocument:
+        Statement:
+        - Action:
+          - dynamodb:BatchGetItem
+          - dynamodb:GetRecords
+          - dynamodb:GetShardIterator
+          - dynamodb:Query
+          - dynamodb:GetItem
+          - dynamodb:Scan
+          - dynamodb:ConditionCheckItem
+          Effect: Allow
+          Resource:
+          - Fn::GetAtt:
+            - dbSocial6D567F09
+            - Arn
+          - Fn::Join:
+            - ''
+            - - Fn::GetAtt:
+                - dbSocial6D567F09
+                - Arn
+              - /index/*
+        Version: '2012-10-17'
+      PolicyName: fngetpinnedtweetsServiceRoleDefaultPolicy97648BEE
+      Roles:
+      - Ref: fngetpinnedtweetsServiceRole8DCEC9C4
+    Metadata:
+      aws:cdk:path: soldev-api/fn/get-pinned-tweets/ServiceRole/DefaultPolicy/Resource
+  fngetpinnedtweets3D972D10:
+    Type: AWS::Lambda::Function
+    Properties:
+      Code:
+        S3Bucket:
+          Ref: AssetParametersfb232e121dbfec10a038d0da25272a589cd4e5b5312738d29d1a512714d8f4ceS3BucketB0999233
+        S3Key:
+          Fn::Join:
+          - ''
+          - - Fn::Select:
+              - 0
+              - Fn::Split:
+                - '||'
+                - Ref: AssetParametersfb232e121dbfec10a038d0da25272a589cd4e5b5312738d29d1a512714d8f4ceS3VersionKey15D36A2B
+            - Fn::Select:
+              - 1
+              - Fn::Split:
+                - '||'
+                - Ref: AssetParametersfb232e121dbfec10a038d0da25272a589cd4e5b5312738d29d1a512714d8f4ceS3VersionKey15D36A2B
+      Role:
+        Fn::GetAtt:
+        - fngetpinnedtweetsServiceRole8DCEC9C4
+        - Arn
+      Architectures:
+      - arm64
+      Handler: bootstrap
+      MemorySize: 1024
+      Runtime: provided.al2
+    DependsOn:
+    - fngetpinnedtweetsServiceRoleDefaultPolicy97648BEE
+    - fngetpinnedtweetsServiceRole8DCEC9C4
+    Metadata:
+      aws:cdk:path: soldev-api/fn/get-pinned-tweets/Resource
+      aws:asset:path: ../../cdk.out/asset.fb232e121dbfec10a038d0da25272a589cd4e5b5312738d29d1a512714d8f4ce
+      aws:asset:is-bundled: true
+      aws:asset:property: Code
+  fnpatchpintweetServiceRole96B860EA:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+        - Action: sts:AssumeRole
+          Effect: Allow
+          Principal:
+            Service: lambda.amazonaws.com
+        Version: '2012-10-17'
+      ManagedPolicyArns:
+      - Fn::Join:
+        - ''
+        - - 'arn:'
+          - Ref: AWS::Partition
+          - :iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+    Metadata:
+      aws:cdk:path: soldev-api/fn/patch-pin-tweet/ServiceRole/Resource
+  fnpatchpintweetServiceRoleDefaultPolicyE6813541:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyDocument:
+        Statement:
+        - Action:
+          - dynamodb:BatchGetItem
+          - dynamodb:GetRecords
+          - dynamodb:GetShardIterator
+          - dynamodb:Query
+          - dynamodb:GetItem
+          - dynamodb:Scan
+          - dynamodb:ConditionCheckItem
+          - dynamodb:BatchWriteItem
+          - dynamodb:PutItem
+          - dynamodb:UpdateItem
+          - dynamodb:DeleteItem
+          Effect: Allow
+          Resource:
+          - Fn::GetAtt:
+            - dbSocial6D567F09
+            - Arn
+          - Fn::Join:
+            - ''
+            - - Fn::GetAtt:
+                - dbSocial6D567F09
+                - Arn
+              - /index/*
+        Version: '2012-10-17'
+      PolicyName: fnpatchpintweetServiceRoleDefaultPolicyE6813541
+      Roles:
+      - Ref: fnpatchpintweetServiceRole96B860EA
+    Metadata:
+      aws:cdk:path: soldev-api/fn/patch-pin-tweet/ServiceRole/DefaultPolicy/Resource
+  fnpatchpintweet34BEBEBF:
+    Type: AWS::Lambda::Function
+    Properties:
+      Code:
+        S3Bucket:
+          Ref: AssetParametersf6ed0e5146dd29607925205ace249892ff984d30de41765d834cfe839cd673b2S3BucketD270E2AC
+        S3Key:
+          Fn::Join:
+          - ''
+          - - Fn::Select:
+              - 0
+              - Fn::Split:
+                - '||'
+                - Ref: AssetParametersf6ed0e5146dd29607925205ace249892ff984d30de41765d834cfe839cd673b2S3VersionKey26806467
+            - Fn::Select:
+              - 1
+              - Fn::Split:
+                - '||'
+                - Ref: AssetParametersf6ed0e5146dd29607925205ace249892ff984d30de41765d834cfe839cd673b2S3VersionKey26806467
+      Role:
+        Fn::GetAtt:
+        - fnpatchpintweetServiceRole96B860EA
+        - Arn
+      Architectures:
+      - arm64
+      Handler: bootstrap
+      MemorySize: 1024
+      Runtime: provided.al2
+    DependsOn:
+    - fnpatchpintweetServiceRoleDefaultPolicyE6813541
+    - fnpatchpintweetServiceRole96B860EA
+    Metadata:
+      aws:cdk:path: soldev-api/fn/patch-pin-tweet/Resource
+      aws:asset:path: ../../cdk.out/asset.f6ed0e5146dd29607925205ace249892ff984d30de41765d834cfe839cd673b2
+      aws:asset:is-bundled: true
+      aws:asset:property: Code
+  fnsyncyoutubecontentServiceRole53D15362:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+        - Action: sts:AssumeRole
+          Effect: Allow
+          Principal:
+            Service: lambda.amazonaws.com
+        Version: '2012-10-17'
+      ManagedPolicyArns:
+      - Fn::Join:
+        - ''
+        - - 'arn:'
+          - Ref: AWS::Partition
+          - :iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+    Metadata:
+      aws:cdk:path: soldev-api/fn/sync-youtube-content/ServiceRole/Resource
+  fnsyncyoutubecontentServiceRoleDefaultPolicyAB21EEB5:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyDocument:
+        Statement:
+        - Action:
+          - dynamodb:BatchGetItem
+          - dynamodb:GetRecords
+          - dynamodb:GetShardIterator
+          - dynamodb:Query
+          - dynamodb:GetItem
+          - dynamodb:Scan
+          - dynamodb:ConditionCheckItem
+          Effect: Allow
+          Resource:
+          - Fn::GetAtt:
+            - dbPlaylists34E7CF8C
+            - Arn
+          - Fn::Join:
+            - ''
+            - - Fn::GetAtt:
+                - dbPlaylists34E7CF8C
+                - Arn
+              - /index/*
+        - Action:
+          - dynamodb:BatchGetItem
+          - dynamodb:GetRecords
+          - dynamodb:GetShardIterator
+          - dynamodb:Query
+          - dynamodb:GetItem
+          - dynamodb:Scan
+          - dynamodb:ConditionCheckItem
+          - dynamodb:BatchWriteItem
+          - dynamodb:PutItem
+          - dynamodb:UpdateItem
+          - dynamodb:DeleteItem
+          Effect: Allow
+          Resource:
+          - Fn::GetAtt:
+            - dbContent587A7F3B
+            - Arn
+          - Fn::Join:
+            - ''
+            - - Fn::GetAtt:
+                - dbContent587A7F3B
+                - Arn
+              - /index/*
+        Version: '2012-10-17'
+      PolicyName: fnsyncyoutubecontentServiceRoleDefaultPolicyAB21EEB5
+      Roles:
+      - Ref: fnsyncyoutubecontentServiceRole53D15362
+    Metadata:
+      aws:cdk:path: soldev-api/fn/sync-youtube-content/ServiceRole/DefaultPolicy/Resource
+  fnsyncyoutubecontent4590DE6A:
+    Type: AWS::Lambda::Function
+    Properties:
+      Code:
+        S3Bucket:
+          Ref: AssetParameterse3c7f23fb7fc584ae9c4f14548b1425275fbf41ac5ff7917b148b2fc0d720a54S3Bucket45EFF3B2
+        S3Key:
+          Fn::Join:
+          - ''
+          - - Fn::Select:
+              - 0
+              - Fn::Split:
+                - '||'
+                - Ref: AssetParameterse3c7f23fb7fc584ae9c4f14548b1425275fbf41ac5ff7917b148b2fc0d720a54S3VersionKeyC0613152
+            - Fn::Select:
+              - 1
+              - Fn::Split:
+                - '||'
+                - Ref: AssetParameterse3c7f23fb7fc584ae9c4f14548b1425275fbf41ac5ff7917b148b2fc0d720a54S3VersionKeyC0613152
+      Role:
+        Fn::GetAtt:
+        - fnsyncyoutubecontentServiceRole53D15362
+        - Arn
+      Architectures:
+      - arm64
+      Environment:
+        Variables:
+          YOUTUBE_API_KEY: AIzaSyARH8JPIKcZ7pAijeYdvULZVxI4qcJsLt4
+          ALGOLIA_APP_ID: V4D5J873RY
+          ALGOLIA_API_KEY: e723db2ac97033e29fa9f74a7470cd75
+          DEV_ALGOLIA_INDEX: dev_soldev
+          PROD_ALGOLIA_INDEX: prod_soldev
+          AWS_ENV: development
+      Handler: bootstrap
+      MemorySize: 1024
+      Runtime: provided.al2
+      Timeout: 300
+    DependsOn:
+    - fnsyncyoutubecontentServiceRoleDefaultPolicyAB21EEB5
+    - fnsyncyoutubecontentServiceRole53D15362
+    Metadata:
+      aws:cdk:path: soldev-api/fn/sync-youtube-content/Resource
+      aws:asset:path: ../../cdk.out/asset.e3c7f23fb7fc584ae9c4f14548b1425275fbf41ac5ff7917b148b2fc0d720a54
+      aws:asset:is-bundled: true
+      aws:asset:property: Code
+  fnYoutubeCron1EA7D7EB:
+    Type: AWS::Events::Rule
+    Properties:
+      ScheduleExpression: rate(12 hours)
+      State: ENABLED
+      Targets:
+      - Arn:
+          Fn::GetAtt:
+          - fnsyncyoutubecontent4590DE6A
+          - Arn
+        Id: Target0
+    Metadata:
+      aws:cdk:path: soldev-api/fn/YoutubeCron/Resource
+  fnYoutubeCronAllowEventRulesoldevapifnsyncyoutubecontent63163B5DAEBD26F6:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName:
+        Fn::GetAtt:
+        - fnsyncyoutubecontent4590DE6A
+        - Arn
+      Principal: events.amazonaws.com
+      SourceArn:
+        Fn::GetAtt:
+        - fnYoutubeCron1EA7D7EB
+        - Arn
+    Metadata:
+      aws:cdk:path: soldev-api/fn/YoutubeCron/AllowEventRulesoldevapifnsyncyoutubecontent63163B5D
+  fnsynctwitterServiceRole04A9E71D:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+        - Action: sts:AssumeRole
+          Effect: Allow
+          Principal:
+            Service: lambda.amazonaws.com
+        Version: '2012-10-17'
+      ManagedPolicyArns:
+      - Fn::Join:
+        - ''
+        - - 'arn:'
+          - Ref: AWS::Partition
+          - :iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+    Metadata:
+      aws:cdk:path: soldev-api/fn/sync-twitter/ServiceRole/Resource
+  fnsynctwitterServiceRoleDefaultPolicy7CA18174:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyDocument:
+        Statement:
+        - Action:
+          - dynamodb:BatchGetItem
+          - dynamodb:GetRecords
+          - dynamodb:GetShardIterator
+          - dynamodb:Query
+          - dynamodb:GetItem
+          - dynamodb:Scan
+          - dynamodb:ConditionCheckItem
+          - dynamodb:BatchWriteItem
+          - dynamodb:PutItem
+          - dynamodb:UpdateItem
+          - dynamodb:DeleteItem
+          Effect: Allow
+          Resource:
+          - Fn::GetAtt:
+            - dbSocial6D567F09
+            - Arn
+          - Fn::Join:
+            - ''
+            - - Fn::GetAtt:
+                - dbSocial6D567F09
+                - Arn
+              - /index/*
+        Version: '2012-10-17'
+      PolicyName: fnsynctwitterServiceRoleDefaultPolicy7CA18174
+      Roles:
+      - Ref: fnsynctwitterServiceRole04A9E71D
+    Metadata:
+      aws:cdk:path: soldev-api/fn/sync-twitter/ServiceRole/DefaultPolicy/Resource
+  fnsynctwitterB544BBA1:
+    Type: AWS::Lambda::Function
+    Properties:
+      Code:
+        S3Bucket:
+          Ref: AssetParameters8216302f6f9e93dadaf36c36ce8539cecb053b207c7b3e13559444abfee5c93aS3BucketAE98B78F
+        S3Key:
+          Fn::Join:
+          - ''
+          - - Fn::Select:
+              - 0
+              - Fn::Split:
+                - '||'
+                - Ref: AssetParameters8216302f6f9e93dadaf36c36ce8539cecb053b207c7b3e13559444abfee5c93aS3VersionKeyCC75984C
+            - Fn::Select:
+              - 1
+              - Fn::Split:
+                - '||'
+                - Ref: AssetParameters8216302f6f9e93dadaf36c36ce8539cecb053b207c7b3e13559444abfee5c93aS3VersionKeyCC75984C
+      Role:
+        Fn::GetAtt:
+        - fnsynctwitterServiceRole04A9E71D
+        - Arn
+      Architectures:
+      - arm64
+      Environment:
+        Variables:
+          TWITTER_BEARER_TOKEN: AAAAAAAAAAAAAAAAAAAAAJF0UQEAAAAAjpD1xTy7cAq%2Fy5H9jb6bN7vvqoM%3DBcc104X46yHQbI6M8VbQaNJSxxZVhKzMZoGjMgGUxVlE6CuYCG
+      Handler: bootstrap
+      MemorySize: 1024
+      Runtime: provided.al2
+      Timeout: 300
+    DependsOn:
+    - fnsynctwitterServiceRoleDefaultPolicy7CA18174
+    - fnsynctwitterServiceRole04A9E71D
+    Metadata:
+      aws:cdk:path: soldev-api/fn/sync-twitter/Resource
+      aws:asset:path: ../../cdk.out/asset.8216302f6f9e93dadaf36c36ce8539cecb053b207c7b3e13559444abfee5c93a
+      aws:asset:is-bundled: true
+      aws:asset:property: Code
+  fnTwitterCron47656B14:
+    Type: AWS::Events::Rule
+    Properties:
+      ScheduleExpression: rate(1 minute)
+      State: ENABLED
+      Targets:
+      - Arn:
+          Fn::GetAtt:
+          - fnsynctwitterB544BBA1
+          - Arn
+        Id: Target0
+    Metadata:
+      aws:cdk:path: soldev-api/fn/TwitterCron/Resource
+  fnTwitterCronAllowEventRulesoldevapifnsynctwitterFAD0DB798337A70F:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName:
+        Fn::GetAtt:
+        - fnsynctwitterB544BBA1
+        - Arn
+      Principal: events.amazonaws.com
+      SourceArn:
+        Fn::GetAtt:
+        - fnTwitterCron47656B14
+        - Arn
+    Metadata:
+      aws:cdk:path: soldev-api/fn/TwitterCron/AllowEventRulesoldevapifnsynctwitterFAD0DB79
+  fnreviewnewcontentServiceRoleCFF57282:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+        - Action: sts:AssumeRole
+          Effect: Allow
+          Principal:
+            Service: lambda.amazonaws.com
+        Version: '2012-10-17'
+      ManagedPolicyArns:
+      - Fn::Join:
+        - ''
+        - - 'arn:'
+          - Ref: AWS::Partition
+          - :iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+    Metadata:
+      aws:cdk:path: soldev-api/fn/review-new-content/ServiceRole/Resource
+  fnreviewnewcontentServiceRoleDefaultPolicy66429DEB:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyDocument:
+        Statement:
+        - Action:
+          - dynamodb:BatchGetItem
+          - dynamodb:GetRecords
+          - dynamodb:GetShardIterator
+          - dynamodb:Query
+          - dynamodb:GetItem
+          - dynamodb:Scan
+          - dynamodb:ConditionCheckItem
+          - dynamodb:BatchWriteItem
+          - dynamodb:PutItem
+          - dynamodb:UpdateItem
+          - dynamodb:DeleteItem
+          Effect: Allow
+          Resource:
+          - Fn::GetAtt:
+            - dbContent587A7F3B
+            - Arn
+          - Fn::Join:
+            - ''
+            - - Fn::GetAtt:
+                - dbContent587A7F3B
+                - Arn
+              - /index/*
+        Version: '2012-10-17'
+      PolicyName: fnreviewnewcontentServiceRoleDefaultPolicy66429DEB
+      Roles:
+      - Ref: fnreviewnewcontentServiceRoleCFF57282
+    Metadata:
+      aws:cdk:path: soldev-api/fn/review-new-content/ServiceRole/DefaultPolicy/Resource
+  fnreviewnewcontent3FA0772C:
+    Type: AWS::Lambda::Function
+    Properties:
+      Code:
+        S3Bucket:
+          Ref: AssetParameters848662c22539b8dafe3300112de66d8e510752ed6e0d2c889f376258cabc9780S3BucketBFC78564
+        S3Key:
+          Fn::Join:
+          - ''
+          - - Fn::Select:
+              - 0
+              - Fn::Split:
+                - '||'
+                - Ref: AssetParameters848662c22539b8dafe3300112de66d8e510752ed6e0d2c889f376258cabc9780S3VersionKey7F01A7CE
+            - Fn::Select:
+              - 1
+              - Fn::Split:
+                - '||'
+                - Ref: AssetParameters848662c22539b8dafe3300112de66d8e510752ed6e0d2c889f376258cabc9780S3VersionKey7F01A7CE
+      Role:
+        Fn::GetAtt:
+        - fnreviewnewcontentServiceRoleCFF57282
+        - Arn
+      Architectures:
+      - arm64
+      Handler: bootstrap
+      MemorySize: 1024
+      Runtime: provided.al2
+    DependsOn:
+    - fnreviewnewcontentServiceRoleDefaultPolicy66429DEB
+    - fnreviewnewcontentServiceRoleCFF57282
+    Metadata:
+      aws:cdk:path: soldev-api/fn/review-new-content/Resource
+      aws:asset:path: ../../cdk.out/asset.848662c22539b8dafe3300112de66d8e510752ed6e0d2c889f376258cabc9780
+      aws:asset:is-bundled: true
+      aws:asset:property: Code
+  fnReviewNewContentCronEB7C2AF6:
+    Type: AWS::Events::Rule
+    Properties:
+      ScheduleExpression: rate(1 day)
+      State: ENABLED
+      Targets:
+      - Arn:
+          Fn::GetAtt:
+          - fnreviewnewcontent3FA0772C
+          - Arn
+        Id: Target0
+    Metadata:
+      aws:cdk:path: soldev-api/fn/ReviewNewContentCron/Resource
+  fnReviewNewContentCronAllowEventRulesoldevapifnreviewnewcontent8257967AEE3EBC8D:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName:
+        Fn::GetAtt:
+        - fnreviewnewcontent3FA0772C
+        - Arn
+      Principal: events.amazonaws.com
+      SourceArn:
+        Fn::GetAtt:
+        - fnReviewNewContentCronEB7C2AF6
+        - Arn
+    Metadata:
+      aws:cdk:path: soldev-api/fn/ReviewNewContentCron/AllowEventRulesoldevapifnreviewnewcontent8257967A
+  fnpostcompanyServiceRole9B6DE5EA:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+        - Action: sts:AssumeRole
+          Effect: Allow
+          Principal:
+            Service: lambda.amazonaws.com
+        Version: '2012-10-17'
+      ManagedPolicyArns:
+      - Fn::Join:
+        - ''
+        - - 'arn:'
+          - Ref: AWS::Partition
+          - :iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+    Metadata:
+      aws:cdk:path: soldev-api/fn/post-company/ServiceRole/Resource
+  fnpostcompany3FF005A9:
+    Type: AWS::Lambda::Function
+    Properties:
+      Code:
+        S3Bucket:
+          Ref: AssetParameters876bd266c6233a130b96c3a21bededa7a6b4b17edb8da77b69143835747b2c51S3Bucket830B295A
+        S3Key:
+          Fn::Join:
+          - ''
+          - - Fn::Select:
+              - 0
+              - Fn::Split:
+                - '||'
+                - Ref: AssetParameters876bd266c6233a130b96c3a21bededa7a6b4b17edb8da77b69143835747b2c51S3VersionKey2B1C07B2
+            - Fn::Select:
+              - 1
+              - Fn::Split:
+                - '||'
+                - Ref: AssetParameters876bd266c6233a130b96c3a21bededa7a6b4b17edb8da77b69143835747b2c51S3VersionKey2B1C07B2
+      Role:
+        Fn::GetAtt:
+        - fnpostcompanyServiceRole9B6DE5EA
+        - Arn
+      Architectures:
+      - arm64
+      Environment:
+        Variables:
+          POSTGRESQL_URL: postgres://postgres:hrz7jvn5CRZ6rwv-cvq@db1.cluster-cjyq6tez63eg.us-east-1.rds.amazonaws.com:5432/soldev?sslmode=disable
+      Handler: bootstrap
+      MemorySize: 1024
+      Runtime: provided.al2
+    DependsOn:
+    - fnpostcompanyServiceRole9B6DE5EA
+    Metadata:
+      aws:cdk:path: soldev-api/fn/post-company/Resource
+      aws:asset:path: ../../cdk.out/asset.876bd266c6233a130b96c3a21bededa7a6b4b17edb8da77b69143835747b2c51
+      aws:asset:is-bundled: true
+      aws:asset:property: Code
+  CDKMetadata:
+    Type: AWS::CDK::Metadata
+    Properties:
+      Analytics: v2:deflate64:H4sIAAAAAAAA/11S227DIAz9lr0Tetv2vLTVuknbVKX7AQfcjDaBiEurCvHvg9Co3Z58Dhzbx4YZnT1O6fThBc6mYPw48UxppH5ngR1JhUY5zZCslDRWO2bJai8/oe+FbEhpDNoobBKJ51vQ0KFFncgtdS9jNhdWKBlIauOhFw1YPMPlNKd+rToQ8iumJu0de7O2L3uRTlNINHUbZBnE49FMFo0saSvlbC7yLi02GpKDpPtHB10gLXQ1B+rTIKg7Ycz1/tVJls3rpHxaUF9WGNfE85wJ7dCSEgAyi8VUY6j/UM0m5vRJN+JABHTUV6rF3DzGrWoFuwwrHFAgrFWO77WSNhoC9oM3yT1di/gqonbjKPc8EBOdLh074vBqV5TDrdwfnskSTNwHv0joFK+p/4Y6mx3AuKmiUXSjxuXEZgWk/2Do8C0InlBG4it3HTTGEAKRiiM9mMlp9kxnCzp/OBghCu2kFR3SKsdfhZ/lFpYCAAA=
+    Metadata:
+      aws:cdk:path: soldev-api/CDKMetadata/Default
+    Condition: CDKMetadataAvailable
+Mappings:
+  AWSCloudFrontPartitionHostedZoneIdMap:
+    aws:
+      zoneId: Z2FDTNDATAQYW2
+    aws-cn:
+      zoneId: Z3RFFRIM2A3IF5
+Parameters:
+  AssetParameters7cf8b82e9b6ffce296a8afdccdb82f1ec2fce1f982a640bc262d3120b8b67f49S3BucketDAF2175B:
+    Type: String
+    Description: S3 bucket for asset "7cf8b82e9b6ffce296a8afdccdb82f1ec2fce1f982a640bc262d3120b8b67f49"
+  AssetParameters7cf8b82e9b6ffce296a8afdccdb82f1ec2fce1f982a640bc262d3120b8b67f49S3VersionKey2AFFEA47:
+    Type: String
+    Description: S3 key for asset version "7cf8b82e9b6ffce296a8afdccdb82f1ec2fce1f982a640bc262d3120b8b67f49"
+  AssetParameters7cf8b82e9b6ffce296a8afdccdb82f1ec2fce1f982a640bc262d3120b8b67f49ArtifactHashAEFE0E24:
+    Type: String
+    Description: Artifact hash for asset "7cf8b82e9b6ffce296a8afdccdb82f1ec2fce1f982a640bc262d3120b8b67f49"
+  AssetParameters76aa34cff0f36ea1beebaf302a42a79a4a8ff59698942276701e5871a2726dbbS3Bucket06F2EC9C:
+    Type: String
+    Description: S3 bucket for asset "76aa34cff0f36ea1beebaf302a42a79a4a8ff59698942276701e5871a2726dbb"
+  AssetParameters76aa34cff0f36ea1beebaf302a42a79a4a8ff59698942276701e5871a2726dbbS3VersionKey89DC97CA:
+    Type: String
+    Description: S3 key for asset version "76aa34cff0f36ea1beebaf302a42a79a4a8ff59698942276701e5871a2726dbb"
+  AssetParameters76aa34cff0f36ea1beebaf302a42a79a4a8ff59698942276701e5871a2726dbbArtifactHash8704D9AF:
+    Type: String
+    Description: Artifact hash for asset "76aa34cff0f36ea1beebaf302a42a79a4a8ff59698942276701e5871a2726dbb"
+  AssetParameters12efff2396203c0ada64b480ba57edd8f586b028f32df4e346192a903de0e586S3Bucket9ECE3EA4:
+    Type: String
+    Description: S3 bucket for asset "12efff2396203c0ada64b480ba57edd8f586b028f32df4e346192a903de0e586"
+  AssetParameters12efff2396203c0ada64b480ba57edd8f586b028f32df4e346192a903de0e586S3VersionKey8809181C:
+    Type: String
+    Description: S3 key for asset version "12efff2396203c0ada64b480ba57edd8f586b028f32df4e346192a903de0e586"
+  AssetParameters12efff2396203c0ada64b480ba57edd8f586b028f32df4e346192a903de0e586ArtifactHashD9BD135C:
+    Type: String
+    Description: Artifact hash for asset "12efff2396203c0ada64b480ba57edd8f586b028f32df4e346192a903de0e586"
+  AssetParameters42b565ac6cce5ada3083face2627fc8dc2b351f9f870133ca73b8b03d6edef16S3Bucket6D165AC1:
+    Type: String
+    Description: S3 bucket for asset "42b565ac6cce5ada3083face2627fc8dc2b351f9f870133ca73b8b03d6edef16"
+  AssetParameters42b565ac6cce5ada3083face2627fc8dc2b351f9f870133ca73b8b03d6edef16S3VersionKey324849B1:
+    Type: String
+    Description: S3 key for asset version "42b565ac6cce5ada3083face2627fc8dc2b351f9f870133ca73b8b03d6edef16"
+  AssetParameters42b565ac6cce5ada3083face2627fc8dc2b351f9f870133ca73b8b03d6edef16ArtifactHash942E17F0:
+    Type: String
+    Description: Artifact hash for asset "42b565ac6cce5ada3083face2627fc8dc2b351f9f870133ca73b8b03d6edef16"
+  AssetParameters3e4a286656ae3be0dffd0e9f0389acaa22b480df2d5cabb71067f6b343823be3S3BucketE7472246:
+    Type: String
+    Description: S3 bucket for asset "3e4a286656ae3be0dffd0e9f0389acaa22b480df2d5cabb71067f6b343823be3"
+  AssetParameters3e4a286656ae3be0dffd0e9f0389acaa22b480df2d5cabb71067f6b343823be3S3VersionKey6813FBAA:
+    Type: String
+    Description: S3 key for asset version "3e4a286656ae3be0dffd0e9f0389acaa22b480df2d5cabb71067f6b343823be3"
+  AssetParameters3e4a286656ae3be0dffd0e9f0389acaa22b480df2d5cabb71067f6b343823be3ArtifactHashD6AB88E5:
+    Type: String
+    Description: Artifact hash for asset "3e4a286656ae3be0dffd0e9f0389acaa22b480df2d5cabb71067f6b343823be3"
+  AssetParameters691ab089facd01968ad3bf6f38501b82019e441b429df23d45e16d2f2bfbf747S3Bucket8FEE0828:
+    Type: String
+    Description: S3 bucket for asset "691ab089facd01968ad3bf6f38501b82019e441b429df23d45e16d2f2bfbf747"
+  AssetParameters691ab089facd01968ad3bf6f38501b82019e441b429df23d45e16d2f2bfbf747S3VersionKey82459397:
+    Type: String
+    Description: S3 key for asset version "691ab089facd01968ad3bf6f38501b82019e441b429df23d45e16d2f2bfbf747"
+  AssetParameters691ab089facd01968ad3bf6f38501b82019e441b429df23d45e16d2f2bfbf747ArtifactHashF7E64944:
+    Type: String
+    Description: Artifact hash for asset "691ab089facd01968ad3bf6f38501b82019e441b429df23d45e16d2f2bfbf747"
+  AssetParameters37b86bbfb7af4d956ed4253c2b00cb1584e90a0c3f629372dcc2a94d031064f2S3Bucket4CAB6BA2:
+    Type: String
+    Description: S3 bucket for asset "37b86bbfb7af4d956ed4253c2b00cb1584e90a0c3f629372dcc2a94d031064f2"
+  AssetParameters37b86bbfb7af4d956ed4253c2b00cb1584e90a0c3f629372dcc2a94d031064f2S3VersionKey99D7DBE2:
+    Type: String
+    Description: S3 key for asset version "37b86bbfb7af4d956ed4253c2b00cb1584e90a0c3f629372dcc2a94d031064f2"
+  AssetParameters37b86bbfb7af4d956ed4253c2b00cb1584e90a0c3f629372dcc2a94d031064f2ArtifactHash505DB780:
+    Type: String
+    Description: Artifact hash for asset "37b86bbfb7af4d956ed4253c2b00cb1584e90a0c3f629372dcc2a94d031064f2"
+  AssetParametersc9902c006a0c661b705489b21072ed04897ccc939bcbbccbd7793c5e7717f071S3Bucket79724106:
+    Type: String
+    Description: S3 bucket for asset "c9902c006a0c661b705489b21072ed04897ccc939bcbbccbd7793c5e7717f071"
+  AssetParametersc9902c006a0c661b705489b21072ed04897ccc939bcbbccbd7793c5e7717f071S3VersionKeyBFCFDF29:
+    Type: String
+    Description: S3 key for asset version "c9902c006a0c661b705489b21072ed04897ccc939bcbbccbd7793c5e7717f071"
+  AssetParametersc9902c006a0c661b705489b21072ed04897ccc939bcbbccbd7793c5e7717f071ArtifactHashED8D9D39:
+    Type: String
+    Description: Artifact hash for asset "c9902c006a0c661b705489b21072ed04897ccc939bcbbccbd7793c5e7717f071"
+  AssetParameters3d4fcc29f246c29b2450631015e1d603e3c7826849f7f5494c8ad49776c8fec2S3BucketCE3A8F8A:
+    Type: String
+    Description: S3 bucket for asset "3d4fcc29f246c29b2450631015e1d603e3c7826849f7f5494c8ad49776c8fec2"
+  AssetParameters3d4fcc29f246c29b2450631015e1d603e3c7826849f7f5494c8ad49776c8fec2S3VersionKey3D1440C8:
+    Type: String
+    Description: S3 key for asset version "3d4fcc29f246c29b2450631015e1d603e3c7826849f7f5494c8ad49776c8fec2"
+  AssetParameters3d4fcc29f246c29b2450631015e1d603e3c7826849f7f5494c8ad49776c8fec2ArtifactHashCE2955E2:
+    Type: String
+    Description: Artifact hash for asset "3d4fcc29f246c29b2450631015e1d603e3c7826849f7f5494c8ad49776c8fec2"
+  AssetParameters647ab89b71576e65bdb40a70acfb4e56f70c2e26140e2c9f1775a5ef597e7abaS3BucketD17F26AB:
+    Type: String
+    Description: S3 bucket for asset "647ab89b71576e65bdb40a70acfb4e56f70c2e26140e2c9f1775a5ef597e7aba"
+  AssetParameters647ab89b71576e65bdb40a70acfb4e56f70c2e26140e2c9f1775a5ef597e7abaS3VersionKeyD2F96BAE:
+    Type: String
+    Description: S3 key for asset version "647ab89b71576e65bdb40a70acfb4e56f70c2e26140e2c9f1775a5ef597e7aba"
+  AssetParameters647ab89b71576e65bdb40a70acfb4e56f70c2e26140e2c9f1775a5ef597e7abaArtifactHashC8B66207:
+    Type: String
+    Description: Artifact hash for asset "647ab89b71576e65bdb40a70acfb4e56f70c2e26140e2c9f1775a5ef597e7aba"
+  AssetParameters060e64540c69407d1cc0b4e49efcfac2a5f31c22617e3e66f80f96955ecbf2dfS3BucketF89D5BFE:
+    Type: String
+    Description: S3 bucket for asset "060e64540c69407d1cc0b4e49efcfac2a5f31c22617e3e66f80f96955ecbf2df"
+  AssetParameters060e64540c69407d1cc0b4e49efcfac2a5f31c22617e3e66f80f96955ecbf2dfS3VersionKey8F1EA3AE:
+    Type: String
+    Description: S3 key for asset version "060e64540c69407d1cc0b4e49efcfac2a5f31c22617e3e66f80f96955ecbf2df"
+  AssetParameters060e64540c69407d1cc0b4e49efcfac2a5f31c22617e3e66f80f96955ecbf2dfArtifactHash152BC62E:
+    Type: String
+    Description: Artifact hash for asset "060e64540c69407d1cc0b4e49efcfac2a5f31c22617e3e66f80f96955ecbf2df"
+  AssetParameters8438b2a4327ac99d6e73e229a6198de51b191c80af6eaccd8e6a43c8434954c5S3Bucket962025C3:
+    Type: String
+    Description: S3 bucket for asset "8438b2a4327ac99d6e73e229a6198de51b191c80af6eaccd8e6a43c8434954c5"
+  AssetParameters8438b2a4327ac99d6e73e229a6198de51b191c80af6eaccd8e6a43c8434954c5S3VersionKey03BB8FC8:
+    Type: String
+    Description: S3 key for asset version "8438b2a4327ac99d6e73e229a6198de51b191c80af6eaccd8e6a43c8434954c5"
+  AssetParameters8438b2a4327ac99d6e73e229a6198de51b191c80af6eaccd8e6a43c8434954c5ArtifactHash136FF5FD:
+    Type: String
+    Description: Artifact hash for asset "8438b2a4327ac99d6e73e229a6198de51b191c80af6eaccd8e6a43c8434954c5"
+  AssetParameters3c7c90f2d8a416775911106440ce07a5d5a3ea054a32ed395911d27a6dda6600S3BucketAFDCBA19:
+    Type: String
+    Description: S3 bucket for asset "3c7c90f2d8a416775911106440ce07a5d5a3ea054a32ed395911d27a6dda6600"
+  AssetParameters3c7c90f2d8a416775911106440ce07a5d5a3ea054a32ed395911d27a6dda6600S3VersionKeyFCD566D1:
+    Type: String
+    Description: S3 key for asset version "3c7c90f2d8a416775911106440ce07a5d5a3ea054a32ed395911d27a6dda6600"
+  AssetParameters3c7c90f2d8a416775911106440ce07a5d5a3ea054a32ed395911d27a6dda6600ArtifactHash7E60B52D:
+    Type: String
+    Description: Artifact hash for asset "3c7c90f2d8a416775911106440ce07a5d5a3ea054a32ed395911d27a6dda6600"
+  AssetParameters76fb359b9e1ce64113e589213dbecabb725659571f8ee4b6cc9e0fc12dbb70d2S3Bucket0E256283:
+    Type: String
+    Description: S3 bucket for asset "76fb359b9e1ce64113e589213dbecabb725659571f8ee4b6cc9e0fc12dbb70d2"
+  AssetParameters76fb359b9e1ce64113e589213dbecabb725659571f8ee4b6cc9e0fc12dbb70d2S3VersionKey32B5744B:
+    Type: String
+    Description: S3 key for asset version "76fb359b9e1ce64113e589213dbecabb725659571f8ee4b6cc9e0fc12dbb70d2"
+  AssetParameters76fb359b9e1ce64113e589213dbecabb725659571f8ee4b6cc9e0fc12dbb70d2ArtifactHashBCE4C1E4:
+    Type: String
+    Description: Artifact hash for asset "76fb359b9e1ce64113e589213dbecabb725659571f8ee4b6cc9e0fc12dbb70d2"
+  AssetParametersb43641d94a93dd520a90dab29f0dbb7b3a2707a0489798b29ec9bd928bf5f44eS3Bucket010D1C27:
+    Type: String
+    Description: S3 bucket for asset "b43641d94a93dd520a90dab29f0dbb7b3a2707a0489798b29ec9bd928bf5f44e"
+  AssetParametersb43641d94a93dd520a90dab29f0dbb7b3a2707a0489798b29ec9bd928bf5f44eS3VersionKey0B6E8932:
+    Type: String
+    Description: S3 key for asset version "b43641d94a93dd520a90dab29f0dbb7b3a2707a0489798b29ec9bd928bf5f44e"
+  AssetParametersb43641d94a93dd520a90dab29f0dbb7b3a2707a0489798b29ec9bd928bf5f44eArtifactHash49CBE910:
+    Type: String
+    Description: Artifact hash for asset "b43641d94a93dd520a90dab29f0dbb7b3a2707a0489798b29ec9bd928bf5f44e"
+  AssetParametersfb232e121dbfec10a038d0da25272a589cd4e5b5312738d29d1a512714d8f4ceS3BucketB0999233:
+    Type: String
+    Description: S3 bucket for asset "fb232e121dbfec10a038d0da25272a589cd4e5b5312738d29d1a512714d8f4ce"
+  AssetParametersfb232e121dbfec10a038d0da25272a589cd4e5b5312738d29d1a512714d8f4ceS3VersionKey15D36A2B:
+    Type: String
+    Description: S3 key for asset version "fb232e121dbfec10a038d0da25272a589cd4e5b5312738d29d1a512714d8f4ce"
+  AssetParametersfb232e121dbfec10a038d0da25272a589cd4e5b5312738d29d1a512714d8f4ceArtifactHash661ADD92:
+    Type: String
+    Description: Artifact hash for asset "fb232e121dbfec10a038d0da25272a589cd4e5b5312738d29d1a512714d8f4ce"
+  AssetParametersf6ed0e5146dd29607925205ace249892ff984d30de41765d834cfe839cd673b2S3BucketD270E2AC:
+    Type: String
+    Description: S3 bucket for asset "f6ed0e5146dd29607925205ace249892ff984d30de41765d834cfe839cd673b2"
+  AssetParametersf6ed0e5146dd29607925205ace249892ff984d30de41765d834cfe839cd673b2S3VersionKey26806467:
+    Type: String
+    Description: S3 key for asset version "f6ed0e5146dd29607925205ace249892ff984d30de41765d834cfe839cd673b2"
+  AssetParametersf6ed0e5146dd29607925205ace249892ff984d30de41765d834cfe839cd673b2ArtifactHash04EBDBBE:
+    Type: String
+    Description: Artifact hash for asset "f6ed0e5146dd29607925205ace249892ff984d30de41765d834cfe839cd673b2"
+  AssetParameterse3c7f23fb7fc584ae9c4f14548b1425275fbf41ac5ff7917b148b2fc0d720a54S3Bucket45EFF3B2:
+    Type: String
+    Description: S3 bucket for asset "e3c7f23fb7fc584ae9c4f14548b1425275fbf41ac5ff7917b148b2fc0d720a54"
+  AssetParameterse3c7f23fb7fc584ae9c4f14548b1425275fbf41ac5ff7917b148b2fc0d720a54S3VersionKeyC0613152:
+    Type: String
+    Description: S3 key for asset version "e3c7f23fb7fc584ae9c4f14548b1425275fbf41ac5ff7917b148b2fc0d720a54"
+  AssetParameterse3c7f23fb7fc584ae9c4f14548b1425275fbf41ac5ff7917b148b2fc0d720a54ArtifactHash901EA14F:
+    Type: String
+    Description: Artifact hash for asset "e3c7f23fb7fc584ae9c4f14548b1425275fbf41ac5ff7917b148b2fc0d720a54"
+  AssetParameters8216302f6f9e93dadaf36c36ce8539cecb053b207c7b3e13559444abfee5c93aS3BucketAE98B78F:
+    Type: String
+    Description: S3 bucket for asset "8216302f6f9e93dadaf36c36ce8539cecb053b207c7b3e13559444abfee5c93a"
+  AssetParameters8216302f6f9e93dadaf36c36ce8539cecb053b207c7b3e13559444abfee5c93aS3VersionKeyCC75984C:
+    Type: String
+    Description: S3 key for asset version "8216302f6f9e93dadaf36c36ce8539cecb053b207c7b3e13559444abfee5c93a"
+  AssetParameters8216302f6f9e93dadaf36c36ce8539cecb053b207c7b3e13559444abfee5c93aArtifactHash06B4603F:
+    Type: String
+    Description: Artifact hash for asset "8216302f6f9e93dadaf36c36ce8539cecb053b207c7b3e13559444abfee5c93a"
+  AssetParameters848662c22539b8dafe3300112de66d8e510752ed6e0d2c889f376258cabc9780S3BucketBFC78564:
+    Type: String
+    Description: S3 bucket for asset "848662c22539b8dafe3300112de66d8e510752ed6e0d2c889f376258cabc9780"
+  AssetParameters848662c22539b8dafe3300112de66d8e510752ed6e0d2c889f376258cabc9780S3VersionKey7F01A7CE:
+    Type: String
+    Description: S3 key for asset version "848662c22539b8dafe3300112de66d8e510752ed6e0d2c889f376258cabc9780"
+  AssetParameters848662c22539b8dafe3300112de66d8e510752ed6e0d2c889f376258cabc9780ArtifactHashEC3D51BD:
+    Type: String
+    Description: Artifact hash for asset "848662c22539b8dafe3300112de66d8e510752ed6e0d2c889f376258cabc9780"
+  AssetParameters876bd266c6233a130b96c3a21bededa7a6b4b17edb8da77b69143835747b2c51S3Bucket830B295A:
+    Type: String
+    Description: S3 bucket for asset "876bd266c6233a130b96c3a21bededa7a6b4b17edb8da77b69143835747b2c51"
+  AssetParameters876bd266c6233a130b96c3a21bededa7a6b4b17edb8da77b69143835747b2c51S3VersionKey2B1C07B2:
+    Type: String
+    Description: S3 key for asset version "876bd266c6233a130b96c3a21bededa7a6b4b17edb8da77b69143835747b2c51"
+  AssetParameters876bd266c6233a130b96c3a21bededa7a6b4b17edb8da77b69143835747b2c51ArtifactHashA89DBFD8:
+    Type: String
+    Description: Artifact hash for asset "876bd266c6233a130b96c3a21bededa7a6b4b17edb8da77b69143835747b2c51"
+Conditions:
+  CDKMetadataAvailable:
+    Fn::Or:
+    - Fn::Or:
+      - Fn::Equals:
+        - Ref: AWS::Region
+        - af-south-1
+      - Fn::Equals:
+        - Ref: AWS::Region
+        - ap-east-1
+      - Fn::Equals:
+        - Ref: AWS::Region
+        - ap-northeast-1
+      - Fn::Equals:
+        - Ref: AWS::Region
+        - ap-northeast-2
+      - Fn::Equals:
+        - Ref: AWS::Region
+        - ap-south-1
+      - Fn::Equals:
+        - Ref: AWS::Region
+        - ap-southeast-1
+      - Fn::Equals:
+        - Ref: AWS::Region
+        - ap-southeast-2
+      - Fn::Equals:
+        - Ref: AWS::Region
+        - ca-central-1
+      - Fn::Equals:
+        - Ref: AWS::Region
+        - cn-north-1
+      - Fn::Equals:
+        - Ref: AWS::Region
+        - cn-northwest-1
+    - Fn::Or:
+      - Fn::Equals:
+        - Ref: AWS::Region
+        - eu-central-1
+      - Fn::Equals:
+        - Ref: AWS::Region
+        - eu-north-1
+      - Fn::Equals:
+        - Ref: AWS::Region
+        - eu-south-1
+      - Fn::Equals:
+        - Ref: AWS::Region
+        - eu-west-1
+      - Fn::Equals:
+        - Ref: AWS::Region
+        - eu-west-2
+      - Fn::Equals:
+        - Ref: AWS::Region
+        - eu-west-3
+      - Fn::Equals:
+        - Ref: AWS::Region
+        - me-south-1
+      - Fn::Equals:
+        - Ref: AWS::Region
+        - sa-east-1
+      - Fn::Equals:
+        - Ref: AWS::Region
+        - us-east-1
+      - Fn::Equals:
+        - Ref: AWS::Region
+        - us-east-2
+    - Fn::Or:
+      - Fn::Equals:
+        - Ref: AWS::Region
+        - us-west-1
+      - Fn::Equals:
+        - Ref: AWS::Region
+        - us-west-2

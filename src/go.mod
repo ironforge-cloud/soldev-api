@@ -9,9 +9,10 @@ require (
 	github.com/aws/aws-sdk-go-v2/config v1.13.0
 	github.com/aws/aws-sdk-go-v2/feature/dynamodb/attributevalue v1.6.0
 	github.com/aws/aws-sdk-go-v2/service/dynamodb v1.13.0
+	github.com/jmoiron/sqlx v1.3.4
+	github.com/lib/pq v1.10.4
 	github.com/teris-io/shortid v0.0.0-20201117134242-e59966efd125
-	golang.org/x/net v0.0.0-20220114011407-0dd24b26b47d
-	golang.org/x/oauth2 v0.0.0-20211104180415-d3ed0bb246c8
+	golang.org/x/net v0.0.0-20220121210141-e204ce36a2ba
 	google.golang.org/api v0.65.0
 )
 
@@ -34,10 +35,12 @@ require (
 	github.com/googleapis/gax-go/v2 v2.1.1 // indirect
 	github.com/jmespath/go-jmespath v0.4.0 // indirect
 	go.opencensus.io v0.23.0 // indirect
+	golang.org/x/oauth2 v0.0.0-20211104180415-d3ed0bb246c8 // indirect
 	golang.org/x/sys v0.0.0-20220114195835-da31bd327af9 // indirect
 	golang.org/x/text v0.3.7 // indirect
 	google.golang.org/appengine v1.6.7 // indirect
 	google.golang.org/genproto v0.0.0-20220118154757-00ab72f36ad5 // indirect
 	google.golang.org/grpc v1.43.0 // indirect
 	google.golang.org/protobuf v1.27.1 // indirect
+	gopkg.in/yaml.v2 v2.4.0 // indirect
 )

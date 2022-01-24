@@ -6,6 +6,7 @@ export class DynamoDB extends Construct {
   contentTable: Table;
   usersTable: Table;
   socialTable: Table;
+  bountiesTable: Table;
 
   constructor(scope: Construct, id: string) {
     super(scope, id);
@@ -13,6 +14,7 @@ export class DynamoDB extends Construct {
     this.playlistDB();
     this.contentDB();
     this.socialDB();
+    this.bountiesDB();
   }
 
   userDB(): void {
@@ -192,6 +194,27 @@ export class DynamoDB extends Construct {
         name: "CreatedAt",
         type: AttributeType.STRING,
       },
+    });
+  }
+
+  bountiesDB(): void {
+    this.bountiesTable = new Table(this, "Bounties", {
+      partitionKey: {
+        name: "PK",
+        type: AttributeType.STRING,
+      },
+      sortKey: {
+        name: "CreatedAt",
+        type: AttributeType.STRING,
+      },
+      tableName: "Bounties",
+      removalPolicy:
+        process.env.AWS_ENV === "production"
+          ? RemovalPolicy.RETAIN
+          : RemovalPolicy.DESTROY,
+      billingMode: BillingMode.PAY_PER_REQUEST,
+      pointInTimeRecovery: true,
+      waitForReplicationToFinish: false,
     });
   }
 }

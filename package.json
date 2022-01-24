@@ -4,20 +4,22 @@
   "version": "0.1.0",
   "author": "Italo A. Casas <me@italoacasas.com>",
   "dependencies": {
-    "@aws-cdk/aws-apigatewayv2": "^1.139.0",
-    "@aws-cdk/aws-apigatewayv2-integrations": "^1.139.0",
-    "@aws-cdk/aws-certificatemanager": "^1.139.0",
-    "@aws-cdk/aws-cloudfront": "^1.139.0",
-    "@aws-cdk/aws-cloudfront-origins": "^1.139.0",
-    "@aws-cdk/aws-dynamodb": "^1.139.0",
-    "@aws-cdk/aws-events": "^1.139.0",
-    "@aws-cdk/aws-events-targets": "^1.139.0",
-    "@aws-cdk/aws-lambda": "^1.139.0",
-    "@aws-cdk/aws-lambda-go": "^1.139.0",
-    "@aws-cdk/aws-route53": "^1.139.0",
-    "@aws-cdk/aws-route53-targets": "^1.139.0",
-    "@aws-cdk/core": "^1.139.0",
-    "aws-cdk": "^2.8.0"
+    "@aws-cdk/aws-apigatewayv2": "^1.140.0",
+    "@aws-cdk/aws-apigatewayv2-integrations": "^1.140.0",
+    "@aws-cdk/aws-certificatemanager": "^1.140.0",
+    "@aws-cdk/aws-cloudfront": "^1.140.0",
+    "@aws-cdk/aws-cloudfront-origins": "^1.140.0",
+    "@aws-cdk/aws-dynamodb": "^1.140.0",
+    "@aws-cdk/aws-events": "^1.140.0",
+    "@aws-cdk/aws-events-targets": "^1.140.0",
+    "@aws-cdk/aws-lambda": "^1.140.0",
+    "@aws-cdk/aws-lambda-go": "^1.140.0",
+    "@aws-cdk/aws-rds": "^1.140.0",
+    "@aws-cdk/aws-route53": "^1.140.0",
+    "@aws-cdk/aws-route53-targets": "^1.140.0",
+    "@aws-cdk/core": "^1.140.0",
+    "aws-cdk": "^2.8.0",
+    "aws-cdk-lib": "^2.8.0"
   },
   "devDependencies": {
     "@types/node": "^17.0.10",
@@ -29,7 +31,7 @@
     "fixpack": "^4.0.0",
     "prettier": "^2.5.1",
     "ts-node": "^10.4.0",
-    "typescript": "^4.5.4"
+    "typescript": "^4.5.5"
   },
   "license": "MIT",
   "main": "index.js",
@@ -40,6 +42,7 @@
   "scripts": {
     "build": "tsc",
     "cdk": "cdk",
+    "synth": "AWS_ENV=development cdk synth",
     "deploy": "AWS_ENV=development cdk deploy --hotswap",
     "deploy-dev": "AWS_ENV=development cdk deploy '*' --require-approval 'never'",
     "deploy-prod": "AWS_ENV=production cdk deploy '*'",

@@ -25,3 +25,4 @@ cdk.out
 
 .idea
 .envrc
+.aws-sam

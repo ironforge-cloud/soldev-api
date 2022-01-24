@@ -70,6 +70,80 @@ export class Lambda extends Construct {
     this.DeleteBounty();
     this.GetAllBountiesByCompanyID();
     this.GetBountyByID();
+    this.GetBountyStatsByCompanyID();
+    this.GetBountyStats();
+  }
+
+  GetBountyStats(): void {
+    const lambdaFunction = new GoFunction(this, "get-bounty-stats", {
+      entry: path.join(
+        process.cwd(),
+        "src",
+        "cmd",
+        "get-bounty-stats",
+        "main.go"
+      ),
+      bundling: {
+        environment: {
+          GOARCH: "arm64",
+          GOOS: "linux",
+        },
+      },
+      environment: {
+        POSTGRESQL_URL: process.env.POSTGRESQL_URL as string,
+      },
+      memorySize: 1024,
+      architecture: lambda.Architecture.ARM_64,
+    });
+
+    const integration = new HttpLambdaIntegration(
+      "get-bounty-stats-integration",
+      lambdaFunction
+    );
+
+    this.httpApi.addRoutes({
+      path: "/bounties/stats",
+      methods: [HttpMethod.GET],
+      integration,
+    });
+  }
+
+  GetBountyStatsByCompanyID(): void {
+    const lambdaFunction = new GoFunction(
+      this,
+      "get-bounties-stats-by-companyid",
+      {
+        entry: path.join(
+          process.cwd(),
+          "src",
+          "cmd",
+          "get-bounties-stats-by-companyid",
+          "main.go"
+        ),
+        bundling: {
+          environment: {
+            GOARCH: "arm64",
+            GOOS: "linux",
+          },
+        },
+        environment: {
+          POSTGRESQL_URL: process.env.POSTGRESQL_URL as string,
+        },
+        memorySize: 1024,
+        architecture: lambda.Architecture.ARM_64,
+      }
+    );
+
+    const integration = new HttpLambdaIntegration(
+      "get-bounties-stats-by-companyid-integration",
+      lambdaFunction
+    );
+
+    this.httpApi.addRoutes({
+      path: "/bounties/stats/company/{companyID}",
+      methods: [HttpMethod.GET],
+      integration,
+    });
   }
 
   GetBountyByID(): void {

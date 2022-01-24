@@ -40,7 +40,7 @@ func Handler(ctx context.Context, request Request) (Response, error) {
 		return Response(utils.APIGateway500(errors.New("error unmarshalling"))), nil
 	}
 
-	return Response(utils.APIGateway200(response)), nil
+	return Response(utils.APIGateway200Cache(response)), nil
 }
 
 func main() {

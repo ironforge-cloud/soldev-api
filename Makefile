@@ -18,7 +18,7 @@ deploy-production:
    	npm run deploy-prod
 
 run: synth
-	 aws-vault exec icsolutions-dev -- sam local start-api -t ./cdk.out/soldev-api.template.json
+	 aws-vault exec icsolutions-dev -- sam local start-api -p 3001 -t ./cdk.out/soldev-api.template.json
 
 migration-up:
 	migrate -database ${POSTGRESQL_URL} -path src/migrations up

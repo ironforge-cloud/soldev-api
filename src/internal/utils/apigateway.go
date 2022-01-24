@@ -92,7 +92,8 @@ func APIGateway200Cache(data []byte) Response {
 			"Access-Control-Allow-Origin":      "*",
 			"Access-Control-Allow-Credentials": "true",
 			"Access-Control-Max-Age:":          "604800",
-			"Cache-Control":                    "public, max-age=30, s-maxage=30, proxy-revalidate, must-revalidate",
+			"Cache-Control": "public, max-age=15, s-maxage=10, proxy-revalidate, " +
+				"must-revalidate",
 		},
 		Body: body,
 	}

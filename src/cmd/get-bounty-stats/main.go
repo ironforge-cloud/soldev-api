@@ -27,13 +27,13 @@ func Handler(ctx context.Context, request Request) (Response, error) {
 		return Response(utils.APIGateway500(errors.New("error connecting to db"))), nil
 	}
 
-	companies, err := database.GetAllCompanies(db)
+	stats, err := database.GetBountyStats(db)
 	if err != nil {
 		log.Println(err)
 		return Response(utils.APIGateway500(errors.New("db error"))), nil
 	}
 
-	response, err := json.Marshal(&companies)
+	response, err := json.Marshal(&stats)
 	if err != nil {
 		log.Println(err)
 		return Response(utils.APIGateway500(errors.New("error unmarshalling"))), nil

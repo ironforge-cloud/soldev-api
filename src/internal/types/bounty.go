@@ -18,3 +18,9 @@ type Bounty struct {
 	UpdatedAt    time.Time      `db:"updated_at"`
 	DeletedAt    sql.NullString `db:"deleted_at"`
 }
+
+type BountyStats struct {
+	TotalBalance  int `db:"total_balance"`
+	PaidBalance   int `db:"paid_balance"`
+	TotalBounties int `db:"total_bounties"`
+}

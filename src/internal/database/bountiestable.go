@@ -73,3 +73,65 @@ func GetBountyByID(db *sqlx.DB, bountyID string) (types.Bounty, error) {
 
 	return bounty, nil
 }
+
+// GetStatsByCompanyID
+// TODO: Join these three sql queries
+func GetStatsByCompanyID(db *sqlx.DB, companyID string) (types.BountyStats, error) {
+	var stats types.BountyStats
+
+	err := db.Get(&stats,
+		`SELECT COUNT(*)  AS total_bounties FROM bounties WHERE company_id = $1 AND status = 'active' OR status = 'paid'`,
+		companyID)
+
+	if err != nil {
+		return types.BountyStats{}, err
+	}
+
+	err = db.Get(&stats,
+		`select sum (reward) as total_balance from bounties where company_id = $1 AND status = 'active'
+OR status = 'paid'`,
+		companyID)
+
+	if err != nil {
+		return types.BountyStats{}, err
+	}
+
+	err = db.Get(&stats,
+		`select sum (reward) as paid_balance from bounties where company_id = $1 AND status = 'paid'`,
+		companyID)
+
+	if err != nil {
+		return types.BountyStats{}, err
+	}
+
+	return stats, nil
+}
+
+// GetBountyStats returns bounties stats
+func GetBountyStats(db *sqlx.DB) (types.BountyStats, error) {
+	var stats types.BountyStats
+
+	err := db.Get(&stats,
+		`SELECT COUNT(*) AS total_bounties FROM bounties where status = 'active' OR status = 'paid'`)
+
+	if err != nil {
+		return types.BountyStats{}, err
+	}
+
+	err = db.Get(&stats,
+		`select sum (reward) as total_balance from bounties where status = 'active'
+OR status = 'paid'`)
+
+	if err != nil {
+		return types.BountyStats{}, err
+	}
+
+	err = db.Get(&stats,
+		`select sum (reward) as paid_balance from bounties where status = 'paid'`)
+
+	if err != nil {
+		return types.BountyStats{}, err
+	}
+
+	return stats, nil
+}

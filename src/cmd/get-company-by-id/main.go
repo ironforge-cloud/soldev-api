@@ -30,7 +30,9 @@ func Handler(ctx context.Context, request Request) (Response, error) {
 
 	company, err := database.GetCompanyByID(db, companyID)
 
-	if err != nil {
+	if err != nil && err.Error() == "sql: no rows in result set" {
+		return Response(utils.APIGateway404(errors.New("company not found"))), nil
+	} else if err != nil {
 		log.Println(err)
 		return Response(utils.APIGateway500(errors.New("db error"))), nil
 	}

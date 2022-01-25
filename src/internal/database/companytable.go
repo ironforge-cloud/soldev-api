@@ -49,7 +49,7 @@ func GetCompanyByID(db *sqlx.DB, companyID string) (types.Company, error) {
 		companyID)
 
 	if err != nil {
-		return types.Company{}, nil
+		return types.Company{}, err
 	}
 
 	return company, nil
@@ -59,7 +59,7 @@ func GetCompanyByID(db *sqlx.DB, companyID string) (types.Company, error) {
 func GetAllCompanies(db *sqlx.DB) ([]types.Company, error) {
 	var companies []types.Company
 
-	err := db.Select(&companies, `SELECT * FROM companies WHERE deleted_at is null`)
+	err := db.Select(&companies, `SELECT * FROM companies WHERE deleted_at is null ORDER BY status`)
 
 	if err != nil {
 		return nil, err

@@ -12,8 +12,9 @@ import (
 func CreateBounty(db *sqlx.DB, companyID string, data types.Bounty) error {
 
 	_, err := db.Exec(`INSERT INTO bounties (company_id, title, description, reward, reward_asset,
-status, delivery_date) VALUES ($1,$2,$3,$4,$5,$6,$7)`, companyID, data.Title, data.Description,
-		data.Reward, data.RewardAsset, data.Status, data.DeliveryDate)
+status, delivery_date, tags, url) VALUES ($1,$2,$3,$4,$5,$6,$7, $8, $9)`, companyID, data.Title,
+		data.Description,
+		data.Reward, data.RewardAsset, data.Status, data.DeliveryDate, data.Tags, data.URL)
 
 	if err != nil {
 		return err
@@ -26,8 +27,8 @@ status, delivery_date) VALUES ($1,$2,$3,$4,$5,$6,$7)`, companyID, data.Title, da
 func UpdateBounty(db *sqlx.DB, bountyID string, data types.Bounty) error {
 
 	_, err := db.Exec(`UPDATE bounties SET title = $2, description = $3, reward = $4,
-reward_asset = $5, status = $6, delivery_date = $7 WHERE  id = $1`, bountyID,
-		data.Title, data.Description, data.Reward, data.RewardAsset, data.Status, data.DeliveryDate)
+reward_asset = $5, status = $6, delivery_date = $7, tags = $8, url = $9 WHERE  id = $1`, bountyID,
+		data.Title, data.Description, data.Reward, data.RewardAsset, data.Status, data.DeliveryDate, data.Tags, data.URL)
 
 	if err != nil {
 		return err
@@ -52,7 +53,7 @@ func GetAllBountiesByCompanyID(db *sqlx.DB, projectID string) ([]types.Bounty, e
 	var bounties []types.Bounty
 
 	err := db.Select(&bounties, `SELECT * from bounties WHERE company_id = $1 AND deleted_at is null
-`, projectID)
+ORDER BY reward DESC`, projectID)
 
 	if err != nil {
 		return nil, err
@@ -83,7 +84,8 @@ func GetStatsByCompanyID(db *sqlx.DB, companyID string) (types.BountyStats, erro
 	var paidBalance sql.NullInt64
 
 	err := db.Get(&stats,
-		`SELECT COUNT(*)  AS total_bounties FROM bounties WHERE company_id = $1 AND status = 'active' OR status = 'paid'`,
+		`SELECT COUNT(*)  AS total_bounties FROM bounties WHERE company_id = $1 AND (
+status = 'active' OR status = 'paid')`,
 		companyID)
 
 	if err != nil {
@@ -91,8 +93,8 @@ func GetStatsByCompanyID(db *sqlx.DB, companyID string) (types.BountyStats, erro
 	}
 
 	err = db.Get(&totalBalance,
-		`select sum (reward) as total_balance from bounties where company_id = $1 AND status = 'active'
-OR status = 'paid'`,
+		`select sum (reward) as total_balance from bounties where company_id = $1 AND (status = 'active'
+OR status = 'paid')`,
 		companyID)
 
 	if err != nil {

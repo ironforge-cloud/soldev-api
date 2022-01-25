@@ -12,12 +12,7 @@ import (
 
 // GetConnection init a lazy connection with Postgres
 func GetConnection() (*sqlx.DB, error) {
-	var uri string
-	if os.Getenv("AWS_ENV") == "production" {
-		uri = os.Getenv("PROD_POSTGRESQL_URL")
-	} else {
-		uri = os.Getenv("DEV_POSTGRESQL_URL")
-	}
+	uri := os.Getenv("POSTGRESQL_URL")
 
 	db, err := sqlx.Open("postgres", uri)
 	if err != nil {

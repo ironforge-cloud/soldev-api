@@ -24,4 +24,4 @@ migration-up:
 	migrate -database ${POSTGRESQL_URL} -path src/migrations up
 
 migration-down:
-	migrate -database ${POSTGRESQL_URL} -path src/migrations down
+	migrate -database ${POSTGRESQL_URL} -path src/migrations down 1

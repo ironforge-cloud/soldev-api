@@ -1,13 +1,14 @@
-import { Construct, Duration } from "@aws-cdk/core";
+import { Construct } from "constructs";
+import { Duration } from "aws-cdk-lib";
+import { CfnStage } from "aws-cdk-lib/aws-apigatewayv2";
 import {
-  CfnStage,
   CorsHttpMethod,
   DomainName,
   HttpApi,
-} from "@aws-cdk/aws-apigatewayv2";
-import { ARecord, IHostedZone, RecordTarget } from "@aws-cdk/aws-route53";
-import { LogGroup } from "@aws-cdk/aws-logs";
-import { PolicyStatement, Role, ServicePrincipal } from "@aws-cdk/aws-iam";
+} from "@aws-cdk/aws-apigatewayv2-alpha";
+import { ARecord, IHostedZone, RecordTarget } from "aws-cdk-lib/aws-route53";
+import { LogGroup } from "aws-cdk-lib/aws-logs";
+import { PolicyStatement, Role, ServicePrincipal } from "aws-cdk-lib/aws-iam";
 
 interface IAPIGatewayProps {
   certId: string;

@@ -1,11 +1,12 @@
-import { Construct, Stack, StackProps } from "@aws-cdk/core";
+import { Construct } from "constructs";
+import { Stack, StackProps } from "aws-cdk-lib";
 import { APIGateway } from "./api-gateway-constructor";
 import { DynamoDB } from "./dynamodb-constructor";
 import { Lambda } from "./lambda-construct";
 import { CloudFront } from "./cloudfront";
-import { HostedZone, IHostedZone } from "@aws-cdk/aws-route53";
-import { DomainName } from "@aws-cdk/aws-apigatewayv2";
-import { Certificate } from "@aws-cdk/aws-certificatemanager";
+import { HostedZone, IHostedZone } from "aws-cdk-lib/aws-route53";
+import { DomainName } from "@aws-cdk/aws-apigatewayv2-alpha";
+import { Certificate } from "aws-cdk-lib/aws-certificatemanager";
 
 export class API extends Stack {
   apiGatewayCustomDomain: string;

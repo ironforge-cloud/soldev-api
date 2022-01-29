@@ -12,6 +12,7 @@ type Company struct {
 	Logo        string         `db:"logo"`
 	BgColor     string         `db:"bg_color"`
 	Status      string         `db:"status"`
+	URL         string         `db:"url"`
 	CreatedAt   time.Time      `db:"created_at"`
 	UpdatedAt   time.Time      `db:"updated_at"`
 	DeletedAt   sql.NullString `db:"deleted_at"`

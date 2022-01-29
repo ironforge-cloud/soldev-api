@@ -9,8 +9,8 @@ import (
 
 // CreateCompany saves a company in the DB
 func CreateCompany(db *sqlx.DB, data types.Company) error {
-	_, err := db.Exec(`INSERT INTO companies(name, description, logo, bg_color) VALUES($1, $2, $3,
-$4)`, data.Name, data.Description, data.Logo, data.BgColor)
+	_, err := db.Exec(`INSERT INTO companies(name, description, logo, bg_color, url) VALUES($1, $2,
+$3, $4, $5)`, data.Name, data.Description, data.Logo, data.BgColor, data.URL)
 	if err != nil {
 		return err
 	}
@@ -59,7 +59,8 @@ func GetCompanyByID(db *sqlx.DB, companyID string) (types.Company, error) {
 func GetAllCompanies(db *sqlx.DB) ([]types.Company, error) {
 	var companies []types.Company
 
-	err := db.Select(&companies, `SELECT * FROM companies WHERE deleted_at is null ORDER BY status`)
+	err := db.Select(&companies,
+		`SELECT * FROM companies WHERE deleted_at is null AND status = 'active' ORDER BY status`)
 
 	if err != nil {
 		return nil, err

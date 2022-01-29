@@ -1,5 +1,6 @@
-import { Construct, RemovalPolicy } from "@aws-cdk/core";
-import { AttributeType, BillingMode, Table } from "@aws-cdk/aws-dynamodb";
+import { Construct } from "constructs";
+import { RemovalPolicy } from "aws-cdk-lib";
+import { AttributeType, BillingMode, Table } from "aws-cdk-lib/aws-dynamodb";
 
 export class DynamoDB extends Construct {
   playlistsTable: Table;

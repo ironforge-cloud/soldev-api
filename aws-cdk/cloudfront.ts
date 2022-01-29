@@ -1,21 +1,22 @@
-import { Construct, Duration } from "@aws-cdk/core";
-import * as cloudfront from "@aws-cdk/aws-cloudfront";
+import { Duration } from "aws-cdk-lib";
+import { Construct } from "constructs";
+import * as cloudfront from "aws-cdk-lib/aws-cloudfront";
 import {
   AllowedMethods,
   CachedMethods,
   OriginRequestPolicy,
   SecurityPolicyProtocol,
   ViewerProtocolPolicy,
-} from "@aws-cdk/aws-cloudfront";
-import * as origins from "@aws-cdk/aws-cloudfront-origins";
-import { Certificate } from "@aws-cdk/aws-certificatemanager";
+} from "aws-cdk-lib/aws-cloudfront";
+import * as origins from "aws-cdk-lib/aws-cloudfront-origins";
+import { Certificate } from "aws-cdk-lib/aws-certificatemanager";
 import {
   AaaaRecord,
   ARecord,
   IHostedZone,
   RecordTarget,
-} from "@aws-cdk/aws-route53";
-import { CloudFrontTarget } from "@aws-cdk/aws-route53-targets";
+} from "aws-cdk-lib/aws-route53";
+import { CloudFrontTarget } from "aws-cdk-lib/aws-route53-targets";
 
 interface ICloudFrontConstructProps {
   originEndpoint: string;

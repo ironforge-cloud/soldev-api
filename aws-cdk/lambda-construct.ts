@@ -1,12 +1,13 @@
-import { ITable } from "@aws-cdk/aws-dynamodb";
-import { Construct, Duration } from "@aws-cdk/core";
+import { ITable } from "aws-cdk-lib/aws-dynamodb";
+import { Construct } from "constructs";
+import { Duration } from "aws-cdk-lib";
 import * as path from "path";
-import { HttpApi, HttpMethod } from "@aws-cdk/aws-apigatewayv2";
-import { HttpLambdaIntegration } from "@aws-cdk/aws-apigatewayv2-integrations";
-import { GoFunction } from "@aws-cdk/aws-lambda-go";
-import * as lambda from "@aws-cdk/aws-lambda";
-import * as events from "@aws-cdk/aws-events";
-import * as targets from "@aws-cdk/aws-events-targets";
+import { HttpApi, HttpMethod } from "@aws-cdk/aws-apigatewayv2-alpha";
+import { GoFunction } from "@aws-cdk/aws-lambda-go-alpha";
+import { HttpLambdaIntegration } from "@aws-cdk/aws-apigatewayv2-integrations-alpha";
+import * as lambda from "aws-cdk-lib/aws-lambda";
+import * as events from "aws-cdk-lib/aws-events";
+import * as targets from "aws-cdk-lib/aws-events-targets";
 
 interface ILambdaConstructProps {
   playlistsTable: ITable;

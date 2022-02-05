@@ -60,7 +60,7 @@ func GetAllCompanies(db *sqlx.DB) ([]types.Company, error) {
 	var companies []types.Company
 
 	err := db.Select(&companies,
-		`SELECT * FROM companies WHERE deleted_at is null AND status = 'active' ORDER BY status`)
+		`SELECT * FROM companies WHERE deleted_at is null AND status = 'active' ORDER BY id DESC`)
 
 	if err != nil {
 		return nil, err

@@ -34,13 +34,13 @@ type BountyStats struct {
 	TotalBounties int `db:"total_bounties"`
 }
 
-// Make the Attrs struct implement the driver.Valuer interface. This method
+// Value makes the Attrs struct implement the driver.Valuer interface. This method
 // simply returns the JSON-encoded representation of the struct.
 func (a Tags) Value() (driver.Value, error) {
 	return json.Marshal(a)
 }
 
-// Make the Attrs struct implement the sql.Scanner interface. This method
+// Scan makes the Attrs struct implement the sql.Scanner interface. This method
 // simply decodes a JSON-encoded value into the struct fields.
 func (a *Tags) Scan(value interface{}) error {
 	b, ok := value.([]byte)

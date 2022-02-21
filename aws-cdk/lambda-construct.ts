@@ -73,6 +73,164 @@ export class Lambda extends Construct {
     this.GetBountyByID();
     this.GetBountyStatsByCompanyID();
     this.GetBountyStats();
+
+    this.GetProjectByID();
+    this.PostProjectCategory();
+    this.PutProject();
+    this.PostProject();
+    this.GetProjects();
+  }
+
+  GetProjects(): void {
+    const lambdaFunction = new GoFunction(this, "get-projects", {
+      entry: path.join(process.cwd(), "src", "cmd", "get-projects", "main.go"),
+      bundling: {
+        environment: {
+          GOARCH: "arm64",
+          GOOS: "linux",
+        },
+      },
+      environment: {
+        POSTGRESQL_URL: process.env.POSTGRESQL_URL as string,
+      },
+      memorySize: 1024,
+      architecture: lambda.Architecture.ARM_64,
+    });
+
+    const integration = new HttpLambdaIntegration(
+      "get-projects-integration",
+      lambdaFunction
+    );
+
+    this.httpApi.addRoutes({
+      path: "/projects",
+      methods: [HttpMethod.GET],
+      integration,
+    });
+  }
+
+  PostProject(): void {
+    const lambdaFunction = new GoFunction(this, "post-project", {
+      entry: path.join(process.cwd(), "src", "cmd", "post-project", "main.go"),
+      bundling: {
+        environment: {
+          GOARCH: "arm64",
+          GOOS: "linux",
+        },
+      },
+      environment: {
+        POSTGRESQL_URL: process.env.POSTGRESQL_URL as string,
+      },
+      memorySize: 1024,
+      architecture: lambda.Architecture.ARM_64,
+    });
+
+    const integration = new HttpLambdaIntegration(
+      "post-project-integration",
+      lambdaFunction
+    );
+
+    this.httpApi.addRoutes({
+      path: "/projects/{projectCategoryID}",
+      methods: [HttpMethod.POST],
+      integration,
+    });
+  }
+
+  PutProject(): void {
+    const lambdaFunction = new GoFunction(this, "put-project", {
+      entry: path.join(process.cwd(), "src", "cmd", "put-project", "main.go"),
+      bundling: {
+        environment: {
+          GOARCH: "arm64",
+          GOOS: "linux",
+        },
+      },
+      environment: {
+        POSTGRESQL_URL: process.env.POSTGRESQL_URL as string,
+      },
+      memorySize: 1024,
+      architecture: lambda.Architecture.ARM_64,
+    });
+
+    const integration = new HttpLambdaIntegration(
+      "put-project-integration",
+      lambdaFunction
+    );
+
+    this.httpApi.addRoutes({
+      path: "/projects/{projectID}",
+      methods: [HttpMethod.PUT],
+      integration,
+    });
+  }
+
+  PostProjectCategory(): void {
+    const lambdaFunction = new GoFunction(this, "post-project-category", {
+      entry: path.join(
+        process.cwd(),
+        "src",
+        "cmd",
+        "post-project-category",
+        "main.go"
+      ),
+      bundling: {
+        environment: {
+          GOARCH: "arm64",
+          GOOS: "linux",
+        },
+      },
+      environment: {
+        POSTGRESQL_URL: process.env.POSTGRESQL_URL as string,
+      },
+      memorySize: 1024,
+      architecture: lambda.Architecture.ARM_64,
+    });
+
+    const integration = new HttpLambdaIntegration(
+      "post-project-category-integration",
+      lambdaFunction
+    );
+
+    this.httpApi.addRoutes({
+      path: "/projects/categories",
+      methods: [HttpMethod.POST],
+      integration,
+    });
+  }
+
+  GetProjectByID(): void {
+    const lambdaFunction = new GoFunction(this, "get-project-by-id", {
+      entry: path.join(
+        process.cwd(),
+        "src",
+        "cmd",
+        "get-project-by-id",
+        "main.go"
+      ),
+      bundling: {
+        environment: {
+          GOARCH: "arm64",
+          GOOS: "linux",
+        },
+      },
+      environment: {
+        POSTGRESQL_URL: process.env.POSTGRESQL_URL as string,
+      },
+      memorySize: 1024,
+      architecture: lambda.Architecture.ARM_64,
+    });
+
+    const integration = new HttpLambdaIntegration(
+      "get-project-by-id-integration",
+      lambdaFunction
+    );
+
+    this.httpApi.addRoutes({
+      path: "/projects/{projectID}",
+      methods: [HttpMethod.GET],
+      integration,
+    });
   }
 
   GetBountyStats(): void {

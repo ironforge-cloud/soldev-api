@@ -1,48 +1,36 @@
 package main
 
 import (
-	"api/internal/database"
 	"api/internal/types"
-	"encoding/json"
+	"api/internal/utils"
 	"fmt"
-	"log"
 )
 
 func main() {
-	db, err := database.GetConnection()
-	defer db.Close()
+	var data []types.Content
 
-	if err != nil {
-		log.Println(err)
-	}
+	count := 0
+	for i := 2; i >= 0; i-- {
+		response := utils.FindData(i)
 
-	projects, err := database.GetProjects(db)
+		for _, item := range response {
+			data = append(data, types.Content{
+				ContentType:     "newsletters",
+				Vertical:        "solana",
+				PublishedAt:     item.DateAdded,
+				ContentMarkdown: item.ContentMarkdown,
+				Title:           item.Title,
+				Description:     item.Brief,
+				SK:              item.Slug,
+				PK:              "solana#newsletters",
+				Img:             item.Img,
+				ContentStatus:   "active",
+				Position:        int64(count),
+			})
 
-	var groupedProjects []types.GroupedProjects
-
-	counter := 0
-	for _, item := range projects {
-		for _, e := range item {
-
-      if groupedProjects == nil {
-        groupedProjects = append(groupedProjects, struct{})
-      }
-			groupedProjects[counter].Projects = append(groupedProjects[counter].Projects, e.Project)
-			groupedProjects[counter].CategoryName = e.CategoryName
-			groupedProjects[counter].CategoryID = e.CategoryID
-			counter++
+			count++
 		}
 
+		fmt.Println(data[0])
 	}
-
-	if err != nil {
-		log.Println(err)
-	}
-
-	response, err := json.Marshal(&projects)
-	if err != nil {
-		log.Println(err)
-	}
-
-	fmt.Println(response)
 }

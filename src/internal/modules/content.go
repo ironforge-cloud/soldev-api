@@ -67,44 +67,6 @@ func SaveContent(content []types.Content) error {
 
 	wg.Wait()
 
-	//for _, item := range content {
-	//	if len(item.PublishedAt) == 0 {
-	//		item.PublishedAt = strconv.FormatInt(time.Now().Unix(), 10)
-	//	}
-	//
-	//	// if content status is inactive for more than a week, we can delete
-	//	// the content.
-	//	if item.ContentStatus == "inactive" {
-	//		item.Expdate = time.Now().Add(time.Hour * 168).Unix()
-	//	}
-	//
-	//	// If PK data doesn't match Vertical#ContentType we need to
-	//	// delete the old content
-	//	if item.PK != item.Vertical+"#"+item.ContentType {
-	//		err := database.DeleteContent(item)
-	//
-	//		if err != nil {
-	//			return err
-	//		}
-	//	}
-	//
-	//	// Check if content has Img assigned. If not, try to find one using
-	//	// html meta tags.
-	//	if item.Img == "" {
-	//		item.Img = utils.GetImageIfExist(item.Url)
-	//	}
-	//
-	//	// Change PK to the new one
-	//	item.PK = item.Vertical + "#" + item.ContentType
-	//
-	//	// Saving content
-	//	err := database.SaveContent(item)
-	//
-	//	if err != nil {
-	//		return err
-	//	}
-	//}
-
 	return nil
 }
 

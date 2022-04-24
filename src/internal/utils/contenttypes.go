@@ -14,5 +14,6 @@ func GetContentTypes() []string {
 		"sdk",
 		"tools",
 		"implementations",
+    "newsletters",
 	}
 }

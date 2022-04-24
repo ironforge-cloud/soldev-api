@@ -48,8 +48,8 @@ func GetProjectByID(db *sqlx.DB, projectID string) (types.Project, error) {
 	return project, nil
 }
 
-// GetProjects finds all projects and group them by category.
-func GetProjects(db *sqlx.DB) (map[string][]types.ProjectsWithCategory, error) {
+// GetProjectsGroupedByCategory finds all projects and group them by category.
+func GetProjectsGroupedByCategory(db *sqlx.DB) (map[string][]types.ProjectsWithCategory, error) {
 	projectsWithCategory := make(map[string][]types.ProjectsWithCategory)
 
 	rows, err := db.Query("SELECT category_name, category_id, project_name, project_url, logo, " +
@@ -78,4 +78,17 @@ func GetProjects(db *sqlx.DB) (map[string][]types.ProjectsWithCategory, error) {
 	}
 
 	return projectsWithCategory, nil
+}
+
+// GetProjects finds all projects
+func GetProjects(db *sqlx.DB) ([]types.Project, error) {
+	var projects []types.Project
+
+	err := db.Select(&projects, `SELECT * from projects WHERE deleted_at is null`)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return projects, nil
 }

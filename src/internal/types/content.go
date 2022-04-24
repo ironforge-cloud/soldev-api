@@ -22,6 +22,9 @@ type Content struct {
 	ContentType string
 	Vertical    string
 
+	// Newsletter specific
+	ContentMarkdown string
+
 	// Video specific
 	PlaylistID string
 	Promoted   int8 // deprecated
@@ -36,3 +39,23 @@ type AlgoliaRecord struct {
 	ObjectID string `json:"objectID"`
 	Content
 }
+
+type HashNodeUser struct {
+	User map[string]Publication
+}
+
+type Publication struct {
+	Posts []HashnodePost `json:"posts"`
+}
+
+type HashnodePost struct {
+	Title           string `json:"title"`
+	Brief           string `json:"brief"`
+	Slug            string `json:"slug"`
+	DateAdded       string `json:"dateAdded"`
+	ContentMarkdown string `json:"contentMarkdown"`
+	Img             string `json:"coverImage"`
+}
+
+// map[user:map[publication:map[posts:[map
+// map[user:{map[]}]

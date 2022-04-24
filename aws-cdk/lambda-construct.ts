@@ -78,7 +78,57 @@ export class Lambda extends Construct {
     this.PostProjectCategory();
     this.PutProject();
     this.PostProject();
+    this.GetProjectsGroupedByCategory();
     this.GetProjects();
+
+    this.SyncNewsletters();
+  }
+
+  SyncNewsletters(): void {
+    const lambdaFunction = new GoFunction(this, "sync-newsletters", {
+      entry: path.join(
+        process.cwd(),
+        "src",
+        "cmd",
+        "sync-newsletters",
+        "main.go"
+      ),
+      bundling: {
+        environment: {
+          GOARCH: "arm64",
+          GOOS: "linux",
+        },
+      },
+      environment: {
+        ALGOLIA_APP_ID: process.env.ALGOLIA_APP_ID as string,
+        ALGOLIA_API_KEY: process.env.ALGOLIA_API_KEY as string,
+        DEV_ALGOLIA_INDEX: process.env.DEV_ALGOLIA_INDEX as string,
+        PROD_ALGOLIA_INDEX: process.env.PROD_ALGOLIA_INDEX as string,
+        AWS_ENV: process.env.AWS_ENV as string,
+      },
+      timeout: Duration.seconds(30),
+      memorySize: 1024,
+      architecture: lambda.Architecture.ARM_64,
+    });
+
+    this.contentTable.grantWriteData(lambdaFunction);
+
+    const integration = new HttpLambdaIntegration(
+      "sync-newsletters-integration",
+      lambdaFunction
+    );
+
+    this.httpApi.addRoutes({
+      path: "/content/newsletters",
+      methods: [HttpMethod.GET],
+      integration,
+    });
+
+    const rule = new events.Rule(this, "NewslettersCron", {
+      schedule: events.Schedule.expression("rate(10 minutes)"),
+    });
+
+    rule.addTarget(new targets.LambdaFunction(lambdaFunction));
   }
 
   GetProjects(): void {
@@ -104,6 +154,44 @@ export class Lambda extends Construct {
 
     this.httpApi.addRoutes({
       path: "/projects",
+      methods: [HttpMethod.GET],
+      integration,
+    });
+  }
+
+  GetProjectsGroupedByCategory(): void {
+    const lambdaFunction = new GoFunction(
+      this,
+      "get-projects-grouped-by-category",
+      {
+        entry: path.join(
+          process.cwd(),
+          "src",
+          "cmd",
+          "get-projects-grouped-by-category",
+          "main.go"
+        ),
+        bundling: {
+          environment: {
+            GOARCH: "arm64",
+            GOOS: "linux",
+          },
+        },
+        environment: {
+          POSTGRESQL_URL: process.env.POSTGRESQL_URL as string,
+        },
+        memorySize: 1024,
+        architecture: lambda.Architecture.ARM_64,
+      }
+    );
+
+    const integration = new HttpLambdaIntegration(
+      "get-projects-grouped-by-category-integration",
+      lambdaFunction
+    );
+
+    this.httpApi.addRoutes({
+      path: "/projects/categories",
       methods: [HttpMethod.GET],
       integration,
     });

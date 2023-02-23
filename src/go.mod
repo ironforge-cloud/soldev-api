@@ -11,6 +11,7 @@ require (
 	github.com/aws/aws-sdk-go-v2/service/dynamodb v1.15.3
 	github.com/jmoiron/sqlx v1.3.5
 	github.com/lib/pq v1.10.5
+	github.com/machinebox/graphql v0.2.2
 	github.com/teris-io/shortid v0.0.0-20201117134242-e59966efd125
 	golang.org/x/net v0.0.0-20220421235706-1d1ef9303861
 	google.golang.org/api v0.75.0
@@ -34,12 +35,12 @@ require (
 	github.com/golang/protobuf v1.5.2 // indirect
 	github.com/googleapis/gax-go/v2 v2.3.0 // indirect
 	github.com/jmespath/go-jmespath v0.4.0 // indirect
-	github.com/machinebox/graphql v0.2.2 // indirect
+	github.com/matryer/is v1.4.0 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
 	go.opencensus.io v0.23.0 // indirect
 	golang.org/x/oauth2 v0.0.0-20220411215720-9780585627b5 // indirect
-	golang.org/x/sys v0.0.0-20220422013727-9388b58f7150 // indirect
-	golang.org/x/text v0.3.7 // indirect
+	golang.org/x/sys v0.0.0-20220722155257-8c9f86f7a55f // indirect
+	golang.org/x/text v0.3.8 // indirect
 	google.golang.org/appengine v1.6.7 // indirect
 	google.golang.org/genproto v0.0.0-20220422154200-b37d22cd5731 // indirect
 	google.golang.org/grpc v1.46.0 // indirect
